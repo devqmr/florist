@@ -1,22 +1,33 @@
+import 'package:florist/providers/flower.dart';
+import 'package:florist/providers/flowers.dart';
+import 'package:florist/widgets/flower_item.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class FloristCollectionScreen extends StatelessWidget {
+class FloristCollectionScreen extends StatefulWidget {
   static const ScreenName = "/";
 
-  final dummyFlowersList = const [
-    "Flower001",
-    "Flower002",
-    "Flower003",
-    "Flower004",
-    "Flower005",
-    "Flower006",
-    "Flower007",
-    "Flower008",
-    "Flower009",
-    "Flower010",
-  ];
-
   const FloristCollectionScreen({Key? key}) : super(key: key);
+
+  @override
+  State<FloristCollectionScreen> createState() =>
+      _FloristCollectionScreenState();
+}
+
+class _FloristCollectionScreenState extends State<FloristCollectionScreen> {
+  late Flowers flowersProvider;
+  bool _needToInit = true;
+  late List<Flower> flowersList;
+
+  @override
+  void didChangeDependencies() {
+    if (_needToInit) {
+      flowersProvider = Provider.of<Flowers>(context);
+      flowersProvider.fetchFlowers();
+      flowersList = flowersProvider.flowers;
+      _needToInit = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,14 +46,14 @@ class FloristCollectionScreen extends StatelessWidget {
               mainAxisSpacing: 10,
               crossAxisSpacing: 15,
             ),
-            itemCount: dummyFlowersList.length,
+            itemCount: flowersList.length,
             itemBuilder: (context, index) {
               return Container(
                 decoration: const BoxDecoration(
                   color: Colors.lightGreenAccent,
                 ),
-                child: Text(
-                  dummyFlowersList[index],
+                child: FlowerItem(
+                  flower: flowersList[index],
                 ),
               );
             }),
