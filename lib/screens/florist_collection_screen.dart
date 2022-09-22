@@ -39,7 +39,7 @@ class _FloristCollectionScreenState extends State<FloristCollectionScreen> {
         showErrorMessage(e.toString());
       });
 
-      flowersList = _flowersProvider.flowers;
+      flowersList = _flowersProvider.flowersList;
       _needToInit = false;
     }
   }
