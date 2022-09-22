@@ -8,7 +8,7 @@ import '../models/general_exception.dart';
 import '../my_constant.dart';
 
 class Flowers with ChangeNotifier {
-  List<Flower> flowersList = [];
+  List<Flower> _flowersList = [];
 
   Future<void> fetchFlowers() async {
     try {
@@ -33,8 +33,8 @@ class Flowers with ChangeNotifier {
       //Shuffle images so user see new flowers every time he/she fetch flowers list.
       tempFlowers.shuffle();
 
-      flowersList.clear();
-      flowersList.addAll(tempFlowers);
+      _flowersList.clear();
+      _flowersList.addAll(tempFlowers);
     } catch (e) {
       throw (GeneralException("Error!, We can not load flowers..."));
     }
@@ -42,9 +42,22 @@ class Flowers with ChangeNotifier {
     notifyListeners();
   }
 
-  Flower findFlowerById(String id) {
-    final index = flowersList.indexWhere((flw) => flw.id == id);
+  List<Flower> get allFlowersList {
+    //Return copy list not the original list
+    return [..._flowersList];
+  }
 
-    return flowersList[index];
+  List<Flower> get favFlowersList {
+    //Return copy list not the original list
+    return _flowersList.where((fl) => fl.isFavorite).toList();
+  }
+
+  Flower findFlowerById(String id) {
+    final index = _flowersList.indexWhere((flw) => flw.id == id);
+    return _flowersList[index];
+  }
+
+  void updateFlowersList() {
+    notifyListeners();
   }
 }
