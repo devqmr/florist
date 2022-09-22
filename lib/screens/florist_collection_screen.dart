@@ -69,26 +69,33 @@ class _FloristCollectionScreenState extends State<FloristCollectionScreen> {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : GridView.builder(
-                padding: const EdgeInsets.all(20),
-                gridDelegate:
-                    const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  childAspectRatio: 4 / 5,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 15,
-                ),
-                itemCount: flowersList.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.lightGreenAccent,
+            : RefreshIndicator(
+                onRefresh: () async {
+                  _flowersProvider.fetchFlowers().catchError((e) {
+                    showErrorMessage(e.toString());
+                  });
+                },
+                child: GridView.builder(
+                    padding: const EdgeInsets.all(20),
+                    gridDelegate:
+                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 200,
+                      childAspectRatio: 4 / 5,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 15,
                     ),
-                    child: FlowerItem(
-                      flower: flowersList[index],
-                    ),
-                  );
-                }),
+                    itemCount: flowersList.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.lightGreenAccent,
+                        ),
+                        child: FlowerItem(
+                          flower: flowersList[index],
+                        ),
+                      );
+                    }),
+              ),
       ),
     );
   }
