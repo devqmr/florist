@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:florist/providers/flower.dart';
 import 'package:florist/providers/flowers.dart';
 import 'package:florist/widgets/flower_item.dart';
@@ -26,14 +27,33 @@ class _FloristCollectionScreenState extends State<FloristCollectionScreen> {
       setState(() => _isLoading = true);
 
       _flowersProvider = Provider.of<Flowers>(context);
-      _flowersProvider.fetchFlowers().then((_) {
+
+      _flowersProvider.fetchFlowers().then((value) {
         setState(() {
           _isLoading = false;
         });
+      }).catchError((e) {
+        setState(() {
+          _isLoading = false;
+        });
+        showErrorMessage(e.toString());
       });
+
       flowersList = _flowersProvider.flowers;
       _needToInit = false;
     }
+  }
+
+  void showErrorMessage(String errorMessage) {
+    final snackBar = SnackBar(
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        content: AwesomeSnackbarContent(
+            title: "Error!",
+            message: errorMessage,
+            contentType: ContentType.failure));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -46,12 +66,13 @@ class _FloristCollectionScreenState extends State<FloristCollectionScreen> {
       ),
       body: Container(
         child: _isLoading
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(),
               )
             : GridView.builder(
                 padding: const EdgeInsets.all(20),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                gridDelegate:
+                    const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 200,
                   childAspectRatio: 4 / 5,
                   mainAxisSpacing: 10,
