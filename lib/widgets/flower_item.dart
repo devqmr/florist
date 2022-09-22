@@ -1,14 +1,13 @@
 import 'package:florist/providers/flower.dart';
 import 'package:florist/screens/flower_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FlowerItem extends StatelessWidget {
-  final Flower flower;
-
-  const FlowerItem({Key? key, required this.flower}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    final flower = Provider.of<Flower>(context);
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
@@ -24,6 +23,25 @@ class FlowerItem extends StatelessWidget {
               ),
             ),
             Text("${flower.title}"),
+            Container(
+              height: 48,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        print('click on fav icon');
+                      },
+                      child: Icon(
+                        flower.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border_outlined,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),

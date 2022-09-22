@@ -1,4 +1,6 @@
-class Flower {
+import 'package:flutter/foundation.dart';
+
+class Flower with ChangeNotifier {
   final String id;
   final String title;
   final String description;

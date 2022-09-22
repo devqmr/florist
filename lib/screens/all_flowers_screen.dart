@@ -11,15 +11,14 @@ class AllFlowersScreen extends StatefulWidget {
   const AllFlowersScreen({Key? key}) : super(key: key);
 
   @override
-  State<AllFlowersScreen> createState() =>
-      _AllFlowersScreenState();
+  State<AllFlowersScreen> createState() => _AllFlowersScreenState();
 }
 
 class _AllFlowersScreenState extends State<AllFlowersScreen> {
   late Flowers _flowersProvider;
   bool _needToInit = true;
   bool _isLoading = false;
-  late List<Flower> flowersList;
+  late List<Flower> _flowersList;
 
   @override
   void didChangeDependencies() {
@@ -39,7 +38,7 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
         showErrorMessage(e.toString());
       });
 
-      flowersList = _flowersProvider.flowersList;
+      _flowersList = _flowersProvider.flowersList;
       _needToInit = false;
     }
   }
@@ -58,45 +57,38 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Florist Collection",
-        ),
-      ),
-      body: Container(
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : RefreshIndicator(
-                onRefresh: () async {
-                  _flowersProvider.fetchFlowers().catchError((e) {
-                    showErrorMessage(e.toString());
-                  });
-                },
-                child: GridView.builder(
-                    padding: const EdgeInsets.all(20),
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      childAspectRatio: 4 / 5,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 15,
-                    ),
-                    itemCount: flowersList.length,
-                    itemBuilder: (context, index) {
-                      return Container(
+    return Container(
+      child: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: () async {
+                _flowersProvider.fetchFlowers().catchError((e) {
+                  showErrorMessage(e.toString());
+                });
+              },
+              child: GridView.builder(
+                  padding: const EdgeInsets.all(20),
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 200,
+                    childAspectRatio: 4 / 5,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 15,
+                  ),
+                  itemCount: _flowersList.length,
+                  itemBuilder: (context, index) {
+                    return ChangeNotifierProvider.value(
+                      value: _flowersList[index],
+                      child: Container(
                         decoration: const BoxDecoration(
                           color: Colors.lightGreenAccent,
                         ),
-                        child: FlowerItem(
-                          flower: flowersList[index],
-                        ),
-                      );
-                    }),
-              ),
-      ),
+                        child: FlowerItem(),
+                      ),
+                    );
+                  }),
+            ),
     );
   }
 }
