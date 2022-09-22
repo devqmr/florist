@@ -32,14 +32,12 @@ class Flower with ChangeNotifier {
 
     try {
       final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, '/flowers/$id.json');
-      print("url > $url");
 
       final response = await http.patch(
         url,
         body: json.encode({'isFavorite': isFavorite}),
       );
 
-      print("response.statusCode > ${response.statusCode}");
       if (response.statusCode >= 400) {
         _setFavoriteValue(oldFavStatus);
       }
