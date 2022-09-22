@@ -38,7 +38,6 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
         showErrorMessage(e.toString());
       });
 
-      _flowersList = _flowersProvider.flowersList;
       _needToInit = false;
     }
   }
@@ -57,6 +56,8 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _flowersList = _flowersProvider.allFlowersList;
+
     return Container(
       child: _isLoading
           ? const Center(
