@@ -3,10 +3,13 @@ import 'package:florist/screens/flower_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/flowers.dart';
+
 class FlowerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flower = Provider.of<Flower>(context);
+    final flowersProv = Provider.of<Flowers>(context);
 
     return GestureDetector(
       onTap: () {
@@ -30,7 +33,9 @@ class FlowerItem extends StatelessWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        flower.toggleFavorite();
+                        flower.toggleFavorite().then((success) => {
+                              if (success) {flowersProv.updateFlowersList()}
+                            });
                       },
                       child: Icon(
                         flower.isFavorite

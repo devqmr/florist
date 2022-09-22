@@ -26,7 +26,7 @@ class Flower with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleFavorite() async {
+  Future<bool> toggleFavorite() async {
     final oldFavStatus = isFavorite;
     _setFavoriteValue(!isFavorite);
 
@@ -40,10 +40,14 @@ class Flower with ChangeNotifier {
 
       if (response.statusCode >= 400) {
         _setFavoriteValue(oldFavStatus);
+        return false;
       }
+
+      return true;
     } catch (e) {
       print(e);
       _setFavoriteValue(oldFavStatus);
+      return false;
     }
   }
 }
