@@ -6,7 +6,7 @@ class Flower with ChangeNotifier {
   final String description;
   final String imageUrl;
   final double price;
-  final bool isFavorite;
+  bool isFavorite;
 
   Flower({
     required this.id,
@@ -16,4 +16,9 @@ class Flower with ChangeNotifier {
     required this.price,
     required this.isFavorite,
   });
+
+  void toggleFavorite() {
+    isFavorite = !isFavorite;
+    notifyListeners();
+  }
 }

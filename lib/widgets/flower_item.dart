@@ -30,7 +30,7 @@ class FlowerItem extends StatelessWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        print('click on fav icon');
+                        flower.toggleFavorite();
                       },
                       child: Icon(
                         flower.isFavorite
