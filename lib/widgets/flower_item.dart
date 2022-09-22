@@ -9,7 +9,13 @@ class FlowerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("${flower.title}"),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Image.network(flower.imageUrl),
+          Text("${flower.title}"),
+        ],
+      ),
     );
   }
 }
