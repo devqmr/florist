@@ -44,4 +44,4 @@ app.*.map.json
 /android/app/release
 
 private_constant.dart
-my_constant.dart
+lib/my_constant.dart
