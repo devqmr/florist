@@ -5,17 +5,17 @@ import 'package:florist/widgets/flower_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class FloristCollectionScreen extends StatefulWidget {
-  static const screenName = "/";
+class AllFlowersScreen extends StatefulWidget {
+  static const screenName = "/florist_collection";
 
-  const FloristCollectionScreen({Key? key}) : super(key: key);
+  const AllFlowersScreen({Key? key}) : super(key: key);
 
   @override
-  State<FloristCollectionScreen> createState() =>
-      _FloristCollectionScreenState();
+  State<AllFlowersScreen> createState() =>
+      _AllFlowersScreenState();
 }
 
-class _FloristCollectionScreenState extends State<FloristCollectionScreen> {
+class _AllFlowersScreenState extends State<AllFlowersScreen> {
   late Flowers _flowersProvider;
   bool _needToInit = true;
   bool _isLoading = false;
