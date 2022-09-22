@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FloristCollectionScreen extends StatefulWidget {
-  static const ScreenName = "/";
+  static const screenName = "/";
 
   const FloristCollectionScreen({Key? key}) : super(key: key);
 
