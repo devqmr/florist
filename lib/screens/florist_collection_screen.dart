@@ -15,16 +15,23 @@ class FloristCollectionScreen extends StatefulWidget {
 }
 
 class _FloristCollectionScreenState extends State<FloristCollectionScreen> {
-  late Flowers flowersProvider;
+  late Flowers _flowersProvider;
   bool _needToInit = true;
+  bool _isLoading = false;
   late List<Flower> flowersList;
 
   @override
   void didChangeDependencies() {
     if (_needToInit) {
-      flowersProvider = Provider.of<Flowers>(context);
-      flowersProvider.fetchFlowers();
-      flowersList = flowersProvider.flowers;
+      setState(() => _isLoading = true);
+
+      _flowersProvider = Provider.of<Flowers>(context);
+      _flowersProvider.fetchFlowers().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+      flowersList = _flowersProvider.flowers;
       _needToInit = false;
     }
   }
@@ -38,25 +45,29 @@ class _FloristCollectionScreenState extends State<FloristCollectionScreen> {
         ),
       ),
       body: Container(
-        child: GridView.builder(
-            padding: const EdgeInsets.all(20),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              childAspectRatio: 4 / 5,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 15,
-            ),
-            itemCount: flowersList.length,
-            itemBuilder: (context, index) {
-              return Container(
-                decoration: const BoxDecoration(
-                  color: Colors.lightGreenAccent,
+        child: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : GridView.builder(
+                padding: const EdgeInsets.all(20),
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 200,
+                  childAspectRatio: 4 / 5,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 15,
                 ),
-                child: FlowerItem(
-                  flower: flowersList[index],
-                ),
-              );
-            }),
+                itemCount: flowersList.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.lightGreenAccent,
+                    ),
+                    child: FlowerItem(
+                      flower: flowersList[index],
+                    ),
+                  );
+                }),
       ),
     );
   }
