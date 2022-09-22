@@ -18,6 +18,7 @@ class Flowers with ChangeNotifier {
       await Future.delayed(const Duration(seconds: 5));
 
       Map<String, dynamic> mm = jsonDecode(response.body);
+      flowers.clear();
       mm.forEach((key, value) {
         flowers.add(Flower(
             id: key,
