@@ -1,4 +1,5 @@
 import 'package:florist/providers/flower.dart';
+import 'package:florist/screens/flower_details_screen.dart';
 import 'package:flutter/material.dart';
 
 class FlowerItem extends StatelessWidget {
@@ -8,13 +9,23 @@ class FlowerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Image.network(flower.imageUrl),
-          Text("${flower.title}"),
-        ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(FlowerDetailsScreen.screenName, arguments: flower.id);
+      },
+      child: Container(
+        child: Column(
+          children: [
+            Expanded(
+              child: Image.network(
+                flower.imageUrl,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Text("${flower.title}"),
+          ],
+        ),
       ),
     );
   }
