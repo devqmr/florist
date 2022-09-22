@@ -22,20 +22,28 @@ class FloristCollectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Florist Collection",
         ),
       ),
       body: Container(
         child: GridView.builder(
-            padding: EdgeInsets.all(20),
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            padding: const EdgeInsets.all(20),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 200,
+              childAspectRatio: 4 / 5,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 15,
             ),
             itemCount: dummyFlowersList.length,
             itemBuilder: (context, index) {
-              return Text(
-                "${dummyFlowersList[index]}",
+              return Container(
+                decoration: const BoxDecoration(
+                  color: Colors.lightGreenAccent,
+                ),
+                child: Text(
+                  dummyFlowersList[index],
+                ),
               );
             }),
       ),
