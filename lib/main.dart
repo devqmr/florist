@@ -1,4 +1,5 @@
 import 'package:florist/providers/flowers.dart';
+import 'package:florist/screens/flower_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,8 +31,9 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         routes: {
-          FloristCollectionScreen.ScreenName: (contxt) =>
+          FloristCollectionScreen.screenName: (cxt) =>
               FloristCollectionScreen(),
+          FlowerDetailsScreen.screenName: (cxt) => FlowerDetailsScreen(),
         },
       ),
     );
