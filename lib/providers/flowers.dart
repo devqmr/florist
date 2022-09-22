@@ -15,7 +15,7 @@ class Flowers with ChangeNotifier {
       final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json");
       final response = await http.get(url);
 
-      await Future.delayed(const Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 1));
 
       Map<String, dynamic> mm = jsonDecode(response.body);
       flowers.clear();
@@ -33,5 +33,11 @@ class Flowers with ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  Flower findFlowerById(String id) {
+    final index = flowers.indexWhere((flw) => flw.id == id);
+
+    return flowers[index];
   }
 }
