@@ -4,6 +4,7 @@ import 'package:florist/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/cart.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => Flowers()),
+        ChangeNotifierProvider(create: (_) => Cart()),
       ],
       child: MaterialApp(
         title: 'Florist Demo',

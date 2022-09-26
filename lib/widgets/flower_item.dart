@@ -1,3 +1,4 @@
+import 'package:florist/providers/cart.dart';
 import 'package:florist/providers/flower.dart';
 import 'package:florist/screens/flower_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class FlowerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final flower = Provider.of<Flower>(context);
     final flowersProv = Provider.of<Flowers>(context);
+    final cartProvider = Provider.of<Cart>(context);
 
     return GestureDetector(
       onTap: () {
@@ -30,6 +32,16 @@ class FlowerItem extends StatelessWidget {
               height: 48,
               child: Row(
                 children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        cartProvider.addFlowerToCart(flower);
+                      },
+                      child: Icon(
+                        Icons.shopping_cart,
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
