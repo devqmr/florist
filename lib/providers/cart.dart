@@ -1,32 +1,27 @@
 import 'dart:convert';
-
-import 'package:florist/models/general_exception.dart';
-import 'package:flutter/foundation.dart';
-
 import 'package:http/http.dart' as http;
 import '../my_constant.dart';
 import 'flower.dart';
+import 'package:florist/models/general_exception.dart';
+import 'package:flutter/foundation.dart';
 
 class CartFlower with ChangeNotifier {
-  late final String cartItemId;
-  late final String flowerId;
+  late final String id;
   late final String title;
   double quantity = 0.0;
   late final double price;
   late final String imageUrl;
 
   CartFlower({
-    required this.cartItemId,
-    required this.flowerId,
+    required this.id,
     required this.title,
     required this.price,
     required this.quantity,
     required this.imageUrl,
   });
 
-  CartFlower.flower(String cartItemId, Flower flower) {
-    this.cartItemId = cartItemId;
-    this.flowerId = flower.id;
+  CartFlower.flower(Flower flower) {
+    this.id = flower.id;
     this.title = flower.title;
     this.quantity = 1.0;
     this.price = flower.price;
@@ -39,16 +34,16 @@ class Cart with ChangeNotifier {
 
   void addFlowerToCart(Flower flower) async {
     if (_cartFlowers.containsKey(flower.id)) {
-      final currentCartItem = _cartFlowers['${flower.id}'];
+      final currentCartItem = _cartFlowers[flower.id];
 
       if (currentCartItem == null) {
-        throw (GeneralException('Error, flower not found in the cart'));
+        throw (GeneralException('Error, Not found flower in cart'));
       }
 
       final newQuantity = currentCartItem.quantity + 1;
 
       final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
-          '/cart/ahmed_qamar/${currentCartItem.cartItemId}.json');
+          '/cart/ahmed_qamar/${currentCartItem.id}.json');
 
       final response = await http.patch(
         url,
@@ -63,10 +58,9 @@ class Cart with ChangeNotifier {
             'Error, happen while try to update flower to quantity'));
       }
 
-      _cartFlowers.update(flower.id, (el) {
+      _cartFlowers.update(currentCartItem.id, (el) {
         return CartFlower(
-            cartItemId: currentCartItem.cartItemId,
-            flowerId: el.flowerId,
+            id: el.id,
             title: el.title,
             price: el.price,
             imageUrl: el.imageUrl,
@@ -76,17 +70,18 @@ class Cart with ChangeNotifier {
       // final tempCartItem = _cartFlowers['${flower.id}'];
 
       try {
-        final url =
-            Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar.json');
+        final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
+            '/cart/ahmed_qamar/${flower.id}.json');
 
         final cartItemJson = json.encode({
-          'flowerId': flower.id,
+          'id': flower.id,
           'title': flower.title,
           'quantity': 1,
-          'price': flower.price
+          'price': flower.price,
+          'imageUrl': flower.imageUrl
         });
 
-        final response = await http.post(url, body: cartItemJson);
+        final response = await http.put(url, body: cartItemJson);
 
         //Don't insert cart item
         if (response.statusCode >= 400) {
@@ -94,15 +89,43 @@ class Cart with ChangeNotifier {
               'Error, happen while try to add flower to cart'));
         }
 
-        final cartItemId = json.decode(response.body)['name'];
-        _cartFlowers.putIfAbsent(
-            flower.id, () => CartFlower.flower(cartItemId, flower));
+        _cartFlowers.putIfAbsent(flower.id, () => CartFlower.flower(flower));
       } catch (e) {
         print(e);
         throw (GeneralException(
             'Error, happen while try to add flower to cart'));
       }
     }
+  }
+
+  Future<void> fetchCartItems() async {
+    final url =
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar.json');
+
+    final response = await http.get(url);
+
+    final responseBody = response.body;
+
+    _cartFlowers.clear();
+
+    if (responseBody.isNotEmpty && responseBody.toLowerCase() != "null") {
+      final Map<String, dynamic> cartMap = jsonDecode(responseBody);
+      cartMap.forEach((cartItemId, cartItemDate) {
+        _cartFlowers.putIfAbsent(
+          cartItemId,
+          () => CartFlower(
+            id: cartItemDate['id'],
+            title: cartItemDate['title'],
+            price: cartItemDate['price'],
+            quantity: double.parse(cartItemDate['quantity'].toString()),
+            imageUrl: cartItemDate['imageUrl'] ??
+                "https://www.gardeningknowhow.com/wp-content/uploads/2019/09/flower-color-400x391.jpg",
+          ),
+        );
+      });
+    }
+
+    notifyListeners();
   }
 
   List<CartFlower> get cartItems {
