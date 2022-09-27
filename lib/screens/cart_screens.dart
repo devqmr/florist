@@ -3,10 +3,28 @@ import 'package:florist/widgets/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   static const screenName = '/cart';
 
   const CartScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  bool _needToInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_needToInit) {
+      // final carttt = Provider.of<Cart>(context);
+      // carttt.fetchCartItems();
+
+      _needToInit = false;
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {

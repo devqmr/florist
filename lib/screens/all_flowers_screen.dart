@@ -5,6 +5,8 @@ import 'package:florist/widgets/flower_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/cart.dart';
+
 class AllFlowersScreen extends StatefulWidget {
   static const screenName = "/florist_collection";
 
@@ -37,6 +39,9 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
         });
         showErrorMessage(e.toString());
       });
+
+      final cartProvider = Provider.of<Cart>(context);
+      cartProvider.fetchCartItems();
 
       _needToInit = false;
     }
