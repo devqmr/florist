@@ -32,6 +32,16 @@ class CartFlower with ChangeNotifier {
 class Cart with ChangeNotifier {
   Map<String, CartFlower> _cartFlowers = {};
 
+  double get totalAmount {
+    double total = 0.0;
+
+    _cartFlowers.forEach((key, item) {
+      total += (item.quantity * item.price);
+    });
+
+    return total;
+  }
+
   void addFlowerToCart(Flower flower) async {
     if (_cartFlowers.containsKey(flower.id)) {
       final currentCartItem = _cartFlowers[flower.id];

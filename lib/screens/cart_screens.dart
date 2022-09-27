@@ -28,18 +28,38 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cart = Provider.of<Cart>(context);
+    final _cartProvider = Provider.of<Cart>(context);
     return Container(
-      child: Center(
-        child: ListView.builder(
-          itemBuilder: (ctx, i) {
-            return ChangeNotifierProvider.value(
-              value: cart.cartItems[i],
-              child: CartItem(),
-            );
-          },
-          itemCount: cart.cartItems.length,
-        ),
+      child: Column(
+        children: [
+          Card(
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              child: Row(
+                children: [
+                  Expanded(child: Text('Total')),
+                  Text('\$ ${_cartProvider.totalAmount.toStringAsFixed(2)}'),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text('Order Now'),
+                  )
+                ],
+              ),
+            ),
+          ),
+          Container(
+            height: 500,
+            child: ListView.builder(
+              itemBuilder: (ctx, i) {
+                return ChangeNotifierProvider.value(
+                  value: _cartProvider.cartItems[i],
+                  child: CartItem(),
+                );
+              },
+              itemCount: _cartProvider.cartItems.length,
+            ),
+          ),
+        ],
       ),
     );
   }
