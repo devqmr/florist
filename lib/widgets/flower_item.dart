@@ -13,6 +13,8 @@ class FlowerItem extends StatelessWidget {
     final flowersProv = Provider.of<Flowers>(context);
     final cartProvider = Provider.of<Cart>(context);
 
+    final _quantityInCart = cartProvider.getProductQuantity(flower);
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
@@ -22,9 +24,34 @@ class FlowerItem extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: Image.network(
-                flower.imageUrl,
-                fit: BoxFit.cover,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    flower.imageUrl,
+                    fit: BoxFit.cover,
+                  ),
+                  if (_quantityInCart > 0)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        height: 28,
+                        width: 28,
+                        decoration: const BoxDecoration(
+                            color: Colors.redAccent, shape: BoxShape.circle),
+                        child: FittedBox(
+                          child: Text(
+                            "$_quantityInCart",
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             Text("${flower.title}"),
@@ -38,7 +65,7 @@ class FlowerItem extends StatelessWidget {
                         cartProvider.addFlowerToCart(flower);
                       },
                       child: Icon(
-                        Icons.shopping_cart,
+                        _quantityInCart > 0 ? Icons.add : Icons.shopping_cart,
                       ),
                     ),
                   ),

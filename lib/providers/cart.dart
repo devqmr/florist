@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 class CartFlower with ChangeNotifier {
   late final String id;
   late final String title;
-  double quantity = 0.0;
+  int quantity = 0;
   late final double price;
   late final String imageUrl;
 
@@ -23,7 +23,7 @@ class CartFlower with ChangeNotifier {
   CartFlower.flower(Flower flower) {
     this.id = flower.id;
     this.title = flower.title;
-    this.quantity = 1.0;
+    this.quantity = 1;
     this.price = flower.price;
     this.imageUrl = flower.imageUrl;
   }
@@ -96,6 +96,8 @@ class Cart with ChangeNotifier {
             'Error, happen while try to add flower to cart'));
       }
     }
+
+    notifyListeners();
   }
 
   Future<void> fetchCartItems() async {
@@ -117,7 +119,7 @@ class Cart with ChangeNotifier {
             id: cartItemDate['id'],
             title: cartItemDate['title'],
             price: cartItemDate['price'],
-            quantity: double.parse(cartItemDate['quantity'].toString()),
+            quantity: int.parse(cartItemDate['quantity'].toString()),
             imageUrl: cartItemDate['imageUrl'] ??
                 "https://www.gardeningknowhow.com/wp-content/uploads/2019/09/flower-color-400x391.jpg",
           ),
@@ -135,5 +137,17 @@ class Cart with ChangeNotifier {
     });
 
     return cartItemsList;
+  }
+
+  int getProductQuantity(Flower flower) {
+    int qt = 0;
+
+    if (_cartFlowers.containsKey(flower.id)) {
+      final currentCartItem = _cartFlowers[flower.id];
+
+      qt = currentCartItem?.quantity ?? 0;
+    }
+
+    return qt;
   }
 }
