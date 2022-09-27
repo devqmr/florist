@@ -31,7 +31,7 @@ class Flowers with ChangeNotifier {
       });
 
       //Shuffle images so user see new flowers every time he/she fetch flowers list.
-      tempFlowers.shuffle();
+      // tempFlowers.shuffle();
 
       _flowersList.clear();
       _flowersList.addAll(tempFlowers);
