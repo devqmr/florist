@@ -12,7 +12,13 @@ class CartItem extends StatelessWidget {
       child: ListTile(
         leading: Text('${cartFlower.quantity * cartFlower.price}'),
         title: Text(cartFlower.title),
-        trailing: Text(cartFlower.quantity.toString()),
+        subtitle: Text(cartFlower.quantity.toString()),
+        trailing: Image.network(
+          cartFlower.imageUrl,
+          width: 50,
+          height: 50,
+          fit: BoxFit.cover,
+        ),
         // trailing: Text(cartFlower.price.toString()),
       ),
     );
