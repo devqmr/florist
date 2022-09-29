@@ -9,17 +9,39 @@ class CartItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartFlower = Provider.of<CartFlower>(context);
     return Container(
-      child: ListTile(
-        leading: Text('${cartFlower.quantity * cartFlower.price}'),
-        title: Text(cartFlower.title),
-        subtitle: Text(cartFlower.quantity.toString()),
-        trailing: Image.network(
-          cartFlower.imageUrl,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
+      child: Dismissible(
+        key: ValueKey(cartFlower.id),
+        background: Container(
+          color: Colors.redAccent,
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
+          child: const Icon(
+            Icons.delete,
+            color: Colors.white,
+            size: 36,
+          ),
         ),
-        // trailing: Text(cartFlower.price.toString()),
+        direction: DismissDirection.endToStart,
+        onDismissed: (_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Swipe ${cartFlower.title}")));
+        },
+        child: Card(
+          child: ListTile(
+            leading: Text(
+                (cartFlower.quantity * cartFlower.price).toStringAsFixed(2)),
+            title: Text(cartFlower.title),
+            subtitle: Text(cartFlower.quantity.toString()),
+            trailing: Image.network(
+              cartFlower.imageUrl,
+              width: 50,
+              height: 50,
+              fit: BoxFit.cover,
+            ),
+            // trailing: Text(cartFlower.price.toString()),
+          ),
+        ),
       ),
     );
   }
