@@ -3,6 +3,7 @@ import 'package:florist/screens/fav_flowers_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'all_flowers_screen.dart';
+import 'more_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const screenName = "/";
@@ -20,13 +21,14 @@ class _HomeScreenState extends State<HomeScreen> {
     AllFlowersScreen(),
     FavFlowersScreen(),
     CartScreen(),
+    MoreScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Florist Collection",
         ),
       ),
@@ -38,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         currentIndex: _selectedIndex,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             label: 'All',
@@ -52,11 +55,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           BottomNavigationBarItem(
-            label: 'cart',
+            label: 'Cart',
             icon: Icon(
               Icons.shopping_cart,
             ),
           ),
+          BottomNavigationBarItem(
+            label: 'More',
+            icon: Icon(
+              Icons.more_horiz,
+            ),
+          )
         ],
       ),
     );
