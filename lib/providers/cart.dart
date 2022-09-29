@@ -160,4 +160,22 @@ class Cart with ChangeNotifier {
 
     return qt;
   }
+
+  void removeItem(String id) async {
+    final url =
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar/$id.json');
+
+    final response = await http.delete(url);
+
+    print(json.decode(response.body));
+
+    //Don't insert cart item
+    if (response.statusCode >= 400) {
+      throw (GeneralException('Error, happen while try to add flower to cart'));
+    }
+
+    _cartFlowers.removeWhere((key, value) => key == id);
+
+    notifyListeners();
+  }
 }

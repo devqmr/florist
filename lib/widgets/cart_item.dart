@@ -7,6 +7,7 @@ class CartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<Cart>(context);
     final cartFlower = Provider.of<CartFlower>(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
@@ -66,6 +67,9 @@ class CartItem extends StatelessWidget {
                   ));
         },
         onDismissed: (_) {
+          //Remove item from list
+          cart.removeItem(cartFlower.id);
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: RichText(
