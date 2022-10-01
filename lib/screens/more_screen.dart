@@ -1,3 +1,4 @@
+import 'package:florist/screens/orders_screen.dart';
 import 'package:flutter/material.dart';
 
 class MoreScreen extends StatelessWidget {
@@ -20,13 +21,7 @@ class MoreScreen extends StatelessWidget {
           MoreScreenItem(
             title: "Your orders",
             icon: Icons.add_card,
-            fun: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  "Open Your orders screen",
-                ),
-              ),
-            ),
+            fun: () => Navigator.of(context).pushNamed(OrdersScreen.screenName),
           ),
           MoreScreenItem(
             title: "Manage Flowers",
