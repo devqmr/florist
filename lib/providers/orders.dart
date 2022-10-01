@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:ffi';
 
+import 'package:florist/models/general_exception.dart';
 import 'package:florist/my_constant.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -24,19 +26,38 @@ class Order {
 class Orders extends ChangeNotifier {
   List<Order> _orderList = [];
 
-  void createOrder(List<CartFlower> items) async {
-    final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/orders/ahmed_qamar.json');
+  Future<bool> createOrder(List<CartFlower> items) async {
+    try {
+      final url =
+          Uri.https(MyConstant.FIREBASE_RTDB_URL, '/orders/ahmed_qamar.json');
 
-    final bodyJson = json.encode({
-      "total": "${sumTotalAmount(items)}",
-      "dateTime": DateFormat.yMd().add_jm().format(DateTime.now()),
-      "items": encodeCartFlower(items)
-    });
+      Order tempOrder = Order(
+          id: "",
+          total: sumTotalAmount(items),
+          dateTime: DateFormat.yMd().add_jm().format(DateTime.now()),
+          items: items);
+      final bodyJson = json.encode({
+        "total": "${tempOrder.total}",
+        "dateTime": tempOrder.dateTime,
+        "items": encodeCartFlower(tempOrder.items)
+      });
 
-    final response = await http.post(url, body: bodyJson);
+      final response = await http.post(url, body: bodyJson);
 
-    print("${json.decode(response.body)}");
+      if (response.statusCode >= 400) {
+        throw (GeneralException('Error, happen while try to create order!'));
+      }
+      print("${json.decode(response.body)}");
+      final String orderId = json.decode(response.body)['name'];
+
+      tempOrder.id = orderId;
+      _orderList.add(tempOrder);
+
+      return true;
+    } catch (e) {
+      print(e);
+      throw (GeneralException(e.toString()));
+    }
   }
 
   double sumTotalAmount(List<CartFlower> items) {

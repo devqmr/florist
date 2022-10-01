@@ -44,7 +44,9 @@ class _CartScreenState extends State<CartScreen> {
                 Text('\$ ${_cartProvider.totalAmount.toStringAsFixed(2)}'),
                 TextButton(
                   onPressed: () {
-                    _ordersProvider.createOrder(_cartProvider.cartItems);
+                    _ordersProvider.createOrder(_cartProvider.cartItems)
+                        .then((isOrderCreated) => isOrderCreated ? _cartProvider.clearCartItems() : {}
+                    );
                   },
                   child: const Text('Order Now'),
                 )

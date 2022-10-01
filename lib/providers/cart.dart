@@ -171,11 +171,29 @@ class Cart with ChangeNotifier {
 
     //Don't insert cart item
     if (response.statusCode >= 400) {
-      throw (GeneralException('Error, happen while try to add flower to cart'));
+      throw (GeneralException(
+          'Error, happen while try to add flower to cart!'));
     }
 
     _cartFlowers.removeWhere((key, value) => key == id);
 
+    notifyListeners();
+  }
+
+  void clearCartItems() async {
+    _cartFlowers.clear();
+
+    final url =
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar.json');
+
+    final response = await http.delete(url);
+
+    //Don't insert cart item
+    if (response.statusCode >= 400) {
+      throw (GeneralException('Error, happen while try to clear cart items!'));
+    }
+
+    _cartFlowers.clear();
     notifyListeners();
   }
 }
