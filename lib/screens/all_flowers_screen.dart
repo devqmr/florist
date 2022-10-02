@@ -1,6 +1,7 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:florist/providers/flower.dart';
 import 'package:florist/providers/flowers.dart';
+import 'package:florist/providers/orders.dart';
 import 'package:florist/widgets/flower_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,9 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
 
       final cartProvider = Provider.of<Cart>(context);
       cartProvider.fetchCartItems();
+
+      final ordersProvider = Provider.of<Orders>(context);
+      ordersProvider.fetchOrdersList();
 
       _needToInit = false;
     }

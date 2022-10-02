@@ -60,6 +60,39 @@ class Orders extends ChangeNotifier {
     }
   }
 
+  void fetchOrdersList() async {
+    final url =
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/orders/ahmed_qamar.json');
+
+    final response = await http.get(url);
+
+    if (response.statusCode >= 400) {
+      throw (GeneralException('Error, happen while try to fetch orders!'));
+    }
+
+    _orderList.clear();
+
+    final dynamic bodyJsonObject = jsonDecode(response.body);
+    if (bodyJsonObject == null) {
+      throw (GeneralException('Error, happen while try to fetch orders!'));
+    }
+
+    final Map<String, dynamic> ordersJson = bodyJsonObject;
+    ordersJson.forEach((key, value) {
+      _orderList.add(Order(
+          id: key,
+          total: double.parse(value['total']),
+          dateTime: value['dateTime'],
+          items: prepareOrderItems(value['items'])));
+    });
+
+    notifyListeners();
+  }
+
+  List<Order> get ordersList {
+    return [..._orderList];
+  }
+
   double sumTotalAmount(List<CartFlower> items) {
     double total = 0.0;
 
@@ -84,5 +117,20 @@ class Orders extends ChangeNotifier {
     }
 
     return jsonItems;
+  }
+
+  prepareOrderItems(List<dynamic> items) {
+    final List<CartFlower> tempItems = [];
+
+    for (var fl in items) {
+      tempItems.add(CartFlower(
+          id: fl['id'],
+          title: fl['title'],
+          price: fl['price'],
+          quantity: fl['quantity'],
+          imageUrl: fl['imageUrl']));
+    }
+
+    return tempItems;
   }
 }
