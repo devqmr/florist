@@ -42,7 +42,7 @@ class Cart with ChangeNotifier {
     return total;
   }
 
-  void addFlowerToCart(Flower flower) async {
+  Future<void> addFlowerToCart(Flower flower) async {
     if (_cartFlowers.containsKey(flower.id)) {
       final currentCartItem = _cartFlowers[flower.id];
 

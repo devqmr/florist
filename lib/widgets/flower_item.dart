@@ -59,34 +59,88 @@ class FlowerItem extends StatelessWidget {
               height: 48,
               child: Row(
                 children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        cartProvider.addFlowerToCart(flower);
-                      },
-                      child: Icon(
-                        _quantityInCart > 0 ? Icons.add : Icons.shopping_cart,
-                      ),
+                  FlowerActionWidget(
+                    cartProvider: cartProvider,
+                    icon: Icon(
+                      _quantityInCart > 0 ? Icons.add : Icons.shopping_cart,
                     ),
+                    onPressed: () async {
+                      await cartProvider.addFlowerToCart(flower);
+                    },
                   ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        flower.toggleFavorite().then((success) => {
-                              if (success) {flowersProv.updateFlowersList()}
-                            });
-                      },
-                      child: Icon(
-                        flower.isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border_outlined,
-                      ),
+                  FlowerActionWidget(
+                    cartProvider: cartProvider,
+                    icon: Icon(
+                      flower.isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_border_outlined,
                     ),
+                    onPressed: () async {
+                      await flower.toggleFavorite().then((success) => {
+                            if (success) {flowersProv.updateFlowersList()}
+                          });
+                    },
                   ),
                 ],
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class FlowerActionWidget extends StatefulWidget {
+  const FlowerActionWidget({
+    Key? key,
+    required this.cartProvider,
+    required this.icon,
+    required this.onPressed,
+  }) : super(key: key);
+
+  final Cart cartProvider;
+  final Icon icon;
+  final Function onPressed;
+
+  @override
+  State<FlowerActionWidget> createState() => _FlowerActionWidgetState();
+}
+
+class _FlowerActionWidgetState extends State<FlowerActionWidget> {
+  bool isLoading = false;
+
+  void showLoading() {
+    setState(() {
+      isLoading = true;
+    });
+  }
+
+  hideLoading() {
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Center(
+        child: GestureDetector(
+          onTap: () async {
+            showLoading();
+            await widget.onPressed();
+            hideLoading();
+          },
+          child: isLoading
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                )
+              : widget.icon,
         ),
       ),
     );
