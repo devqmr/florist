@@ -60,4 +60,26 @@ class Flowers with ChangeNotifier {
   void updateFlowersList() {
     notifyListeners();
   }
+
+  Future<void> addFlower(Flower flower) async {
+    final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json");
+
+    final flowerJson = json.encode({
+      'title': flower.title,
+      'description': flower.description,
+      'price': flower.price,
+      'imageUrl': flower.imageUrl,
+      'isFavorite': flower.isFavorite,
+    });
+
+    final response = await http.post(url, body: flowerJson);
+
+    final newFlowerId = json.decode(response.body)['name'];
+
+    final newFlower = flower.copyWith(id: newFlowerId);
+
+    _flowersList.add(newFlower);
+
+    notifyListeners();
+  }
 }

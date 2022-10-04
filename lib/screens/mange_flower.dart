@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/flowers.dart';
+import '../providers/flower.dart';
 
 class ManageFlower extends StatefulWidget {
   static const screenName = "/mange_flower";
@@ -30,6 +34,8 @@ class _ManageFlowerState extends State<ManageFlower> {
 
   @override
   Widget build(BuildContext context) {
+    final flowersProvider = Provider.of<Flowers>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('ManageFlower'),
@@ -40,42 +46,46 @@ class _ManageFlowerState extends State<ManageFlower> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Add new flower'),
-              SizedBox(
+              const Text('Add new flower'),
+              const SizedBox(
                 height: 32,
               ),
+              TextField(
+                decoration: const InputDecoration(hintText: 'Enter the title'),
+                controller: titleController..text = 'My Flower',
+              ),
               Text('Title'),
-              TextField(
-                decoration: InputDecoration(hintText: 'Enter the title'),
-                controller: titleController,
-              ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Text('Description'),
+              const Text('Description'),
               TextField(
-                controller: descriptionController,
-                decoration: InputDecoration(hintText: 'Enter the description'),
+                controller: descriptionController..text = 'My lovely flower',
+                decoration:
+                    const InputDecoration(hintText: 'Enter the description'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Text('Price'),
+              const Text('Price'),
               TextField(
-                decoration: InputDecoration(hintText: 'Enter the price'),
-                controller: priceController,
+                decoration: const InputDecoration(hintText: 'Enter the price'),
+                controller: priceController..text = "56.63",
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Text('Image URL'),
+              const Text('Image URL'),
               TextField(
-                decoration: InputDecoration(hintText: 'Enter the image URL'),
-                controller: imageUrlController,
+                decoration:
+                    const InputDecoration(hintText: 'Enter the image URL'),
+                controller: imageUrlController
+                  ..text =
+                      "https://images.pexels.com/photos/1167050/pexels-photo-1167050.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                 keyboardType: TextInputType.url,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 32,
               ),
               ElevatedButton(
@@ -85,8 +95,18 @@ class _ManageFlowerState extends State<ManageFlower> {
                       'Add Flower, Description > ${descriptionController.text}');
                   print('Add Flower, Price > ${priceController.text}');
                   print('Add Flower, Image URL> ${imageUrlController.text}');
+
+                  flowersProvider.addFlower(
+                    Flower(
+                        id: "",
+                        title: titleController.text,
+                        description: descriptionController.text,
+                        imageUrl: imageUrlController.text,
+                        price: double.parse(priceController.text),
+                        isFavorite: false),
+                  );
                 },
-                child: Text('press'),
+                child: const Text('Add Flower'),
               ),
             ],
           ),
