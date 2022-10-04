@@ -1,6 +1,7 @@
 import 'package:florist/providers/flowers.dart';
 import 'package:florist/screens/flower_details_screen.dart';
 import 'package:florist/screens/home_screen.dart';
+import 'package:florist/screens/mange_flower.dart';
 import 'package:florist/screens/order_details_screen.dart';
 import 'package:florist/screens/orders_screen.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
           FlowerDetailsScreen.screenName: (cxt) => const FlowerDetailsScreen(),
           OrdersScreen.screenName: (cxt) => const OrdersScreen(),
           OrderDetailsScreen.screenName: (cxt) => const OrderDetailsScreen(),
+          ManageFlower.screenName: (cxt) => const ManageFlower(),
         },
       ),
     );
