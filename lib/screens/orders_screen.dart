@@ -15,7 +15,7 @@ class OrdersScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Florist Collection",
+          "My Orders",
         ),
       ),
       body: ListView.builder(
@@ -42,7 +42,7 @@ class OrdersScreen extends StatelessWidget {
                           ordersList[index].total.toStringAsFixed(2),
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Text(
                           ordersList[index].dateTime,
                           style: Theme.of(context).textTheme.titleSmall,
