@@ -1,4 +1,5 @@
 import 'package:florist/providers/flowers.dart';
+import 'package:florist/screens/auth_screen.dart';
 import 'package:florist/screens/flower_details_screen.dart';
 import 'package:florist/screens/home_screen.dart';
 import 'package:florist/screens/mange_flower.dart';
@@ -7,6 +8,7 @@ import 'package:florist/screens/orders_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/orders.dart';
 
@@ -26,6 +28,7 @@ class MyApp extends StatelessWidget {
     // MultiPro
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => Auth()),
         ChangeNotifierProvider(create: (_) => Flowers()),
         ChangeNotifierProvider(create: (_) => Cart()),
         ChangeNotifierProvider(create: (_) => Orders()),
@@ -35,8 +38,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.indigo,
         ),
+        home: const AuthScreen(),
         debugShowCheckedModeBanner: false,
-        initialRoute: '/',
+        // initialRoute: '/',
         routes: {
           HomeScreen.screenName: (cxt) => const HomeScreen(),
           FlowerDetailsScreen.screenName: (cxt) => const FlowerDetailsScreen(),
