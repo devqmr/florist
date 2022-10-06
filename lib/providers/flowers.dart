@@ -15,7 +15,6 @@ class Flowers with ChangeNotifier {
       final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json");
       final response = await http.get(url);
 
-      // await Future.delayed(const Duration(seconds: 1));
 
       Map<String, dynamic> flowersMap = jsonDecode(response.body);
 
