@@ -7,8 +7,10 @@ import 'package:florist/my_constant.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/user_auth.dart';
+
 class Auth with ChangeNotifier {
-  static String generalTOKEN = "";
+  static UserAuth? userAuth;
   String _userId = '';
   String _token = '';
   String _refreshToken = '';
@@ -59,7 +61,7 @@ class Auth with ChangeNotifier {
 
     _userId = responseBody['localId'];
     _token = responseBody['idToken'];
-    generalTOKEN = _token;
+    userAuth = UserAuth(userId: _userId, token: _token);
     _expiresIn = DateTime.now()
         .add(Duration(seconds: int.parse(responseBody['expiresIn'])));
     _refreshToken = responseBody['refreshToken'];

@@ -50,7 +50,7 @@ class Flower with ChangeNotifier {
     _setFavoriteValue(!isFavorite);
 
     try {
-      final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, '/flowers/$id.json', {"auth": Auth.generalTOKEN});
+      final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, '/flowers/$id.json', {"auth": Auth.userAuth?.token});
 
       final response = await http.patch(
         url,

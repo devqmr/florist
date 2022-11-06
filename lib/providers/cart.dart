@@ -54,7 +54,7 @@ class Cart with ChangeNotifier {
       final newQuantity = currentCartItem.quantity + 1;
 
       final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
-          '/cart/ahmed_qamar/${currentCartItem.id}.json');
+          '/cart/${Auth.userAuth?.userId}/${currentCartItem.id}.json');
 
       final response = await http.patch(
         url,
@@ -82,7 +82,7 @@ class Cart with ChangeNotifier {
 
       try {
         final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
-            '/cart/ahmed_qamar/${flower.id}.json');
+            '/cart/${Auth.userAuth?.userId}/${flower.id}.json');
 
         final cartItemJson = json.encode({
           'id': flower.id,
@@ -113,7 +113,7 @@ class Cart with ChangeNotifier {
 
   Future<void> fetchCartItems() async {
     final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar.json', {"auth": Auth.generalTOKEN});
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
 
     final response = await http.get(url);
 
@@ -164,7 +164,7 @@ class Cart with ChangeNotifier {
 
   void removeItem(String id) async {
     final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar/$id.json', {"auth": Auth.generalTOKEN});
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}/$id.json', {"auth": Auth.userAuth?.token});
 
     final response = await http.delete(url);
 
@@ -185,7 +185,7 @@ class Cart with ChangeNotifier {
     _cartFlowers.clear();
 
     final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar.json', {"auth": Auth.generalTOKEN});
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
 
     final response = await http.delete(url);
 
