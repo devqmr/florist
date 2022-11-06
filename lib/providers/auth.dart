@@ -1,15 +1,22 @@
 import 'dart:convert';
 import 'dart:ffi';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import 'package:florist/my_constant.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
+  static String generalTOKEN = "";
   String _userId = '';
   String _token = '';
   String _refreshToken = '';
   DateTime? _expiresIn;
+
+  String get token {
+    return _token;
+  }
 
   Future<void> signUp(String email, String password) async {
     final url = Uri.https(
@@ -25,6 +32,13 @@ class Auth with ChangeNotifier {
 
     final response = await http.post(url, body: bodyJson);
     final responseBody = json.decode(response.body) as Map<String, dynamic>;
+    print("responseBody > $responseBody");
+
+    if (responseBody['error'] != null) {
+      print(
+          "responseBody['error']['message'] > ${responseBody['error']['message']}");
+      throw (HttpException(responseBody['error']['message']));
+    }
   }
 
   Future<void> signIn(String email, String password) async {
@@ -45,15 +59,16 @@ class Auth with ChangeNotifier {
 
     _userId = responseBody['localId'];
     _token = responseBody['idToken'];
-
+    generalTOKEN = _token;
     _expiresIn = DateTime.now()
         .add(Duration(seconds: int.parse(responseBody['expiresIn'])));
     _refreshToken = responseBody['refreshToken'];
 
+    await saveAuthData();
     notifyListeners();
   }
 
-  bool isAuthenticated() {
+  bool get isAuthenticated {
     if (_token.isEmpty) {
       return false;
     }
@@ -63,5 +78,35 @@ class Auth with ChangeNotifier {
     }
 
     return true;
+  }
+
+  Future<void> saveAuthData() async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+
+    // Save an auth values to 'user_auth' key.
+    await prefs.setString(
+        'user_auth',
+        json.encode({
+          'user_id': _userId,
+          'token': _token,
+          'refresh_token': _refreshToken,
+          'expires_in': _expiresIn?.toIso8601String(),
+        }));
+  }
+
+  Future<void> fetchAuthData() async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+
+    final userAuthData = await prefs.getString('user_auth');
+    final userAuthJson = json.decode(userAuthData!) as Map<String, dynamic>;
+
+    _userId = userAuthJson['user_id'];
+    _token = userAuthJson['token'];
+    _refreshToken = userAuthJson['refresh_token'];
+    _expiresIn = DateTime.parse(userAuthJson['expires_in']);
+
+    notifyListeners();
   }
 }
