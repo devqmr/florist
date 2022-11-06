@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
+import 'package:florist/models/logging_interceptor.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:florist/my_constant.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http_interceptor/http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_auth.dart';
@@ -32,7 +34,9 @@ class Auth with ChangeNotifier {
       "returnSecureToken": true,
     });
 
-    final response = await http.post(url, body: bodyJson);
+    final httpInter = InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
+
+    final response = await httpInter.post(url, body: bodyJson);
     final responseBody = json.decode(response.body) as Map<String, dynamic>;
     print("responseBody > $responseBody");
 
@@ -44,6 +48,9 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> signIn(String email, String password) async {
+    final httpInter = InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
+
+
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
       "/v1/accounts:signInWithPassword",
@@ -56,7 +63,7 @@ class Auth with ChangeNotifier {
       "returnSecureToken": true,
     });
 
-    final response = await http.post(url, body: bodyJson);
+    final response = await httpInter.post(url, body: bodyJson);
     final responseBody = json.decode(response.body) as Map<String, dynamic>;
 
     _userId = responseBody['localId'];
