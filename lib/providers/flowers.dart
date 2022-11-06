@@ -1,5 +1,7 @@
+import 'dart:collection';
 import 'dart:convert';
 
+import 'package:florist/providers/auth.dart';
 import 'package:florist/providers/flower.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -16,11 +18,17 @@ class Flowers with ChangeNotifier {
 
   Future<void> fetchFlowers() async {
     try {
-      final url =
-          Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json", {"auth":token});
+      final flowersUrl = Uri.https(
+          MyConstant.FIREBASE_RTDB_URL, "/flowers.json", {"auth": token});
+      final response = await http.get(flowersUrl);
 
-      final response = await http.get(url);
+      final favUserFlowersUrl = Uri.https(MyConstant.FIREBASE_RTDB_URL,
+          "/userFavFlowers/${Auth.userAuth?.userId}.json", {"auth": token});
+      final favUserFlowersResponse = await http.get(favUserFlowersUrl);
+      final favUserFlowersList = jsonDecode(favUserFlowersResponse.body) ?? HashMap();
 
+      print("favUserFlowersList > $favUserFlowersList");
+      print("favUserFlowersList with key > ${favUserFlowersList["-NCY_PssakZka7Owlt62"]}");
 
       Map<String, dynamic> flowersMap = jsonDecode(response.body);
 
@@ -32,7 +40,7 @@ class Flowers with ChangeNotifier {
             description: value['description'],
             imageUrl: value['imageUrl'],
             price: value['price'],
-            isFavorite: value['isFavorite']));
+            isFavorite: favUserFlowersList[key] ?? false));
       });
 
       //Shuffle images so user see new flowers every time he/she fetch flowers list.
@@ -40,7 +48,8 @@ class Flowers with ChangeNotifier {
 
       _flowersList.clear();
       _flowersList.addAll(tempFlowers);
-    } catch (e) {
+    } catch (e, stack) {
+      print(stack);
       throw (GeneralException("Error!, We can not load flowers..."));
     }
 
@@ -67,7 +76,8 @@ class Flowers with ChangeNotifier {
   }
 
   Future<void> addFlower(Flower flower) async {
-    final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json", {"auth": token});
+    final url = Uri.https(
+        MyConstant.FIREBASE_RTDB_URL, "/flowers.json", {"auth": token});
 
     final flowerJson = json.encode({
       'title': flower.title,

@@ -50,14 +50,11 @@ class Flower with ChangeNotifier {
     _setFavoriteValue(!isFavorite);
 
     try {
-      final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, '/flowers/$id.json', {"auth": Auth.userAuth?.token});
+      final favUserFlowersUrl = Uri.https(MyConstant.FIREBASE_RTDB_URL,
+          "/userFavFlowers/${Auth.userAuth?.userId}/$id.json", {"auth": Auth.userAuth?.token});
+      final favUserFlowersResponse = await http.put(favUserFlowersUrl, body: json.encode(isFavorite));
 
-      final response = await http.patch(
-        url,
-        body: json.encode({'isFavorite': isFavorite}),
-      );
-
-      if (response.statusCode >= 400) {
+      if (favUserFlowersResponse.statusCode >= 400) {
         _setFavoriteValue(oldFavStatus);
         return false;
       }
