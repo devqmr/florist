@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:florist/providers/auth.dart';
 import 'package:florist/providers/flower.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -8,11 +9,17 @@ import '../models/general_exception.dart';
 import '../my_constant.dart';
 
 class Flowers with ChangeNotifier {
+  String token;
+
+  Flowers(this.token, this._flowersList);
+
   List<Flower> _flowersList = [];
 
   Future<void> fetchFlowers() async {
     try {
-      final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json");
+      final url =
+          Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json", {"auth":"$token"});
+
       final response = await http.get(url);
 
 
@@ -61,7 +68,7 @@ class Flowers with ChangeNotifier {
   }
 
   Future<void> addFlower(Flower flower) async {
-    final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json");
+    final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json?auth=$token");
 
     final flowerJson = json.encode({
       'title': flower.title,

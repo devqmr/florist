@@ -29,25 +29,30 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => Auth()),
-        ChangeNotifierProvider(create: (_) => Flowers()),
+        ChangeNotifierProxyProvider<Auth, Flowers>(
+            create: (ctx) => Flowers("",[]),
+            update: (ctx, auth, previousFlowers) => Flowers(auth.token, previousFlowers == null ? [] : previousFlowers.allFlowersList)),
         ChangeNotifierProvider(create: (_) => Cart()),
         ChangeNotifierProvider(create: (_) => Orders()),
       ],
-      child: MaterialApp(
-        title: 'Florist Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.indigo,
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
+          title: 'Florist Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.indigo,
+          ),
+          home: auth.isAuthenticated ? const HomeScreen() : const AuthScreen(),
+          debugShowCheckedModeBanner: false,
+          // initialRoute: '/',
+          routes: {
+            HomeScreen.screenName: (cxt) => const HomeScreen(),
+            FlowerDetailsScreen.screenName: (cxt) =>
+                const FlowerDetailsScreen(),
+            OrdersScreen.screenName: (cxt) => const OrdersScreen(),
+            OrderDetailsScreen.screenName: (cxt) => const OrderDetailsScreen(),
+            ManageFlower.screenName: (cxt) => const ManageFlower(),
+          },
         ),
-        home: const AuthScreen(),
-        debugShowCheckedModeBanner: false,
-        // initialRoute: '/',
-        routes: {
-          HomeScreen.screenName: (cxt) => const HomeScreen(),
-          FlowerDetailsScreen.screenName: (cxt) => const FlowerDetailsScreen(),
-          OrdersScreen.screenName: (cxt) => const OrdersScreen(),
-          OrderDetailsScreen.screenName: (cxt) => const OrderDetailsScreen(),
-          ManageFlower.screenName: (cxt) => const ManageFlower(),
-        },
       ),
     );
   }
