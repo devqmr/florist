@@ -1,6 +1,8 @@
+import 'package:florist/providers/auth.dart';
 import 'package:florist/screens/mange_flower.dart';
 import 'package:florist/screens/orders_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MoreScreen extends StatelessWidget {
   static const screenName = "/more_screen";
@@ -9,6 +11,8 @@ class MoreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final authProvider = Provider.of<Auth>(context);
     return Container(
       padding: const EdgeInsets.symmetric(
         vertical: 64,
@@ -39,6 +43,11 @@ class MoreScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          MoreScreenItem(
+            title: "LogOut",
+            icon: Icons.exit_to_app,
+            fun: () => authProvider.logout(),
           ),
         ],
       ),

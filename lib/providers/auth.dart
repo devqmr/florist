@@ -34,7 +34,8 @@ class Auth with ChangeNotifier {
       "returnSecureToken": true,
     });
 
-    final httpInter = InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
+    final httpInter =
+        InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
     final response = await httpInter.post(url, body: bodyJson);
     final responseBody = json.decode(response.body) as Map<String, dynamic>;
@@ -48,8 +49,8 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> signIn(String email, String password) async {
-    final httpInter = InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
-
+    final httpInter =
+        InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
@@ -117,5 +118,24 @@ class Auth with ChangeNotifier {
     _expiresIn = DateTime.parse(userAuthJson['expires_in']);
 
     notifyListeners();
+  }
+
+  Future<void> logout() async {
+    userAuth = null;
+    _userId = '';
+    _token = '';
+    _refreshToken = '';
+    _expiresIn = null;
+
+    await clearAuthData();
+    notifyListeners();
+  }
+
+  Future<void> clearAuthData() async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+
+    // Save an auth values to 'user_auth' key.
+    await prefs.clear();
   }
 }
