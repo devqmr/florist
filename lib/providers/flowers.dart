@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:florist/providers/auth.dart';
 import 'package:florist/providers/flower.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +17,7 @@ class Flowers with ChangeNotifier {
   Future<void> fetchFlowers() async {
     try {
       final url =
-          Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json", {"auth":"$token"});
+          Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json", {"auth":token});
 
       final response = await http.get(url);
 
@@ -68,7 +67,7 @@ class Flowers with ChangeNotifier {
   }
 
   Future<void> addFlower(Flower flower) async {
-    final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json?auth=$token");
+    final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json", {"auth": token});
 
     final flowerJson = json.encode({
       'title': flower.title,

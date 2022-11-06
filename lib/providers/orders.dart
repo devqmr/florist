@@ -63,7 +63,7 @@ class Orders extends ChangeNotifier {
 
   void fetchOrdersList() async {
     final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/orders/ahmed_qamar.json');
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/orders/ahmed_qamar.json', {"auth": Auth.generalTOKEN});
 
     final response = await http.get(url);
 

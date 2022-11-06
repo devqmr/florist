@@ -164,7 +164,7 @@ class Cart with ChangeNotifier {
 
   void removeItem(String id) async {
     final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar/$id.json');
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar/$id.json', {"auth": Auth.generalTOKEN});
 
     final response = await http.delete(url);
 
@@ -185,7 +185,7 @@ class Cart with ChangeNotifier {
     _cartFlowers.clear();
 
     final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar.json');
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar.json', {"auth": Auth.generalTOKEN});
 
     final response = await http.delete(url);
 
