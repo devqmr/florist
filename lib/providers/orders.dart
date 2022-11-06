@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import 'auth.dart';
 import 'cart.dart';
 
 class Order {
@@ -28,8 +29,8 @@ class Orders extends ChangeNotifier {
 
   Future<bool> createOrder(List<CartFlower> items) async {
     try {
-      final url =
-          Uri.https(MyConstant.FIREBASE_RTDB_URL, '/orders/ahmed_qamar.json');
+      final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
+          '/orders/ahmed_qamar.json', {"auth": Auth.generalTOKEN});
 
       Order tempOrder = Order(
           id: "",

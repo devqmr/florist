@@ -4,6 +4,8 @@ import 'package:florist/my_constant.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
+import 'auth.dart';
+
 class Flower with ChangeNotifier {
   final String id;
   final String title;
@@ -48,7 +50,7 @@ class Flower with ChangeNotifier {
     _setFavoriteValue(!isFavorite);
 
     try {
-      final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, '/flowers/$id.json');
+      final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, '/flowers/$id.json', {"auth": Auth.generalTOKEN});
 
       final response = await http.patch(
         url,

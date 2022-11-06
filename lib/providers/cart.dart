@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../my_constant.dart';
+import 'auth.dart';
 import 'flower.dart';
 import 'package:florist/models/general_exception.dart';
 import 'package:flutter/foundation.dart';
@@ -112,7 +113,7 @@ class Cart with ChangeNotifier {
 
   Future<void> fetchCartItems() async {
     final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar.json');
+        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/ahmed_qamar.json', {"auth": Auth.generalTOKEN});
 
     final response = await http.get(url);
 
