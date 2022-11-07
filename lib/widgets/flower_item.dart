@@ -21,70 +21,76 @@ class FlowerItem extends StatelessWidget {
             .pushNamed(FlowerDetailsScreen.screenName, arguments: flower.id);
       },
       child: Container(
-        child: Column(
-          children: [
-            Expanded(
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.network(
-                    flower.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                  if (_quantityInCart > 0)
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        height: 28,
-                        width: 28,
-                        decoration: const BoxDecoration(
-                            color: Colors.redAccent, shape: BoxShape.circle),
-                        child: FittedBox(
-                          child: Text(
-                            "$_quantityInCart",
-                            style: const TextStyle(
-                              color: Colors.white,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15),
+          child: Container(
+            decoration: BoxDecoration(color: Colors.white),
+            child: Column(
+              children: [
+                Expanded(
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.network(
+                        flower.imageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                      if (_quantityInCart > 0)
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            height: 28,
+                            width: 28,
+                            decoration: const BoxDecoration(
+                                color: Colors.redAccent, shape: BoxShape.circle),
+                            child: FittedBox(
+                              child: Text(
+                                "$_quantityInCart",
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
                         ),
+                    ],
+                  ),
+                ),
+                Text("${flower.title}"),
+                Container(
+                  height: 48,
+                  child: Row(
+                    children: [
+                      FlowerActionWidget(
+                        cartProvider: cartProvider,
+                        icon: Icon(
+                          _quantityInCart > 0 ? Icons.add : Icons.shopping_cart,
+                        ),
+                        onPressed: () async {
+                          await cartProvider.addFlowerToCart(flower);
+                        },
                       ),
-                    ),
-                ],
-              ),
+                      FlowerActionWidget(
+                        cartProvider: cartProvider,
+                        icon: Icon(
+                          flower.isFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_border_outlined,
+                        ),
+                        onPressed: () async {
+                          await flower.toggleFavorite().then((success) => {
+                                if (success) {flowersProv.updateFlowersList()}
+                              });
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-            Text("${flower.title}"),
-            Container(
-              height: 48,
-              child: Row(
-                children: [
-                  FlowerActionWidget(
-                    cartProvider: cartProvider,
-                    icon: Icon(
-                      _quantityInCart > 0 ? Icons.add : Icons.shopping_cart,
-                    ),
-                    onPressed: () async {
-                      await cartProvider.addFlowerToCart(flower);
-                    },
-                  ),
-                  FlowerActionWidget(
-                    cartProvider: cartProvider,
-                    icon: Icon(
-                      flower.isFavorite
-                          ? Icons.favorite
-                          : Icons.favorite_border_outlined,
-                    ),
-                    onPressed: () async {
-                      await flower.toggleFavorite().then((success) => {
-                            if (success) {flowersProv.updateFlowersList()}
-                          });
-                    },
-                  ),
-                ],
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

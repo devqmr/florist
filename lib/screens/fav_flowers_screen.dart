@@ -26,12 +26,7 @@ class FavFlowersScreen extends StatelessWidget {
           itemBuilder: (context, index) {
             return ChangeNotifierProvider.value(
               value: favFlowersList[index],
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.lightGreenAccent,
-                ),
-                child: FlowerItem(),
-              ),
+              child: FlowerItem(),
             );
           }),
     );

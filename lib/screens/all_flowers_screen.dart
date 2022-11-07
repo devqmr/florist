@@ -90,12 +90,7 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
                   itemBuilder: (context, index) {
                     return ChangeNotifierProvider.value(
                       value: _flowersList[index],
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.lightGreenAccent,
-                        ),
-                        child: FlowerItem(),
-                      ),
+                      child: FlowerItem(),
                     );
                   }),
             ),
