@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/orders.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,8 +31,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => Auth()),
         ChangeNotifierProxyProvider<Auth, Flowers>(
-            create: (ctx) => Flowers("",[]),
-            update: (ctx, auth, previousFlowers) => Flowers(auth.token, previousFlowers == null ? [] : previousFlowers.allFlowersList)),
+            create: (ctx) => Flowers("", []),
+            update: (ctx, auth, previousFlowers) => Flowers(auth.token,
+                previousFlowers == null ? [] : previousFlowers.allFlowersList)),
         ChangeNotifierProvider(create: (_) => Cart()),
         ChangeNotifierProvider(create: (_) => Orders()),
       ],
@@ -41,7 +43,22 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.indigo,
           ),
-          home: auth.isAuthenticated ? const HomeScreen() : const AuthScreen(),
+          // home: auth.isAuthenticated ? const HomeScreen() : const AuthScreen(),
+          home: auth.isAuthenticated
+              ? const HomeScreen()
+              : FutureBuilder(
+                  future: auth.tryAutoSignIn(),
+                  builder: (context, authResultsSnapshot) {
+                    if (authResultsSnapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return const Center(
+                        child: SplashScreen(),
+                      );
+                    } else {
+                      return const AuthScreen();
+                    }
+                  },
+                ),
           debugShowCheckedModeBanner: false,
           // initialRoute: '/',
           routes: {

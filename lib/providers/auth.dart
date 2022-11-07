@@ -78,6 +78,23 @@ class Auth with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> tryAutoSignIn() async {
+    final isHaveData = await fetchAuthData();
+    if (!isHaveData) {
+      return false;
+    }
+
+    if(isAuthenticated){
+      notifyListeners();
+      return true;
+    }
+
+
+
+
+    return false;
+  }
+
   bool get isAuthenticated {
     if (_token.isEmpty) {
       return false;
@@ -105,9 +122,15 @@ class Auth with ChangeNotifier {
         }));
   }
 
-  Future<void> fetchAuthData() async {
+  Future<bool> fetchAuthData() async {
     // Obtain shared preferences.
     final prefs = await SharedPreferences.getInstance();
+
+    await Future.delayed(Duration(seconds: 5));
+
+    if (!prefs.containsKey('user_auth')) {
+      return false;
+    }
 
     final userAuthData = await prefs.getString('user_auth');
     final userAuthJson = json.decode(userAuthData!) as Map<String, dynamic>;
@@ -117,7 +140,7 @@ class Auth with ChangeNotifier {
     _refreshToken = userAuthJson['refresh_token'];
     _expiresIn = DateTime.parse(userAuthJson['expires_in']);
 
-    notifyListeners();
+    return true;
   }
 
   Future<void> logout() async {
