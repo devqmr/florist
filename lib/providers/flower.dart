@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:florist/my_constant.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http/intercepted_http.dart';
 
+import '../models/logging_interceptor.dart';
 import 'auth.dart';
 
 class Flower with ChangeNotifier {
@@ -13,6 +14,8 @@ class Flower with ChangeNotifier {
   final String imageUrl;
   final double price;
   bool isFavorite;
+  final interceptedHttp =
+  InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
   Flower({
     required this.id,
@@ -52,7 +55,7 @@ class Flower with ChangeNotifier {
     try {
       final favUserFlowersUrl = Uri.https(MyConstant.FIREBASE_RTDB_URL,
           "/userFavFlowers/${Auth.userAuth?.userId}/$id.json", {"auth": Auth.userAuth?.token});
-      final favUserFlowersResponse = await http.put(favUserFlowersUrl, body: json.encode(isFavorite));
+      final favUserFlowersResponse = await interceptedHttp.put(favUserFlowersUrl, body: json.encode(isFavorite));
 
       if (favUserFlowersResponse.statusCode >= 400) {
         _setFavoriteValue(oldFavStatus);

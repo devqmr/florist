@@ -1,13 +1,13 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:florist/models/general_exception.dart';
 import 'package:florist/my_constant.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http_interceptor/http/intercepted_http.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../models/logging_interceptor.dart';
 import 'auth.dart';
 import 'cart.dart';
 
@@ -25,6 +25,9 @@ class Order {
 }
 
 class Orders extends ChangeNotifier {
+  final interceptedHttp =
+  InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
+
   List<Order> _orderList = [];
 
   Future<bool> createOrder(List<CartFlower> items) async {
@@ -43,7 +46,7 @@ class Orders extends ChangeNotifier {
         "items": encodeCartFlower(tempOrder.items)
       });
 
-      final response = await http.post(url, body: bodyJson);
+      final response = await interceptedHttp.post(url, body: bodyJson);
 
       if (response.statusCode >= 400) {
         throw (GeneralException('Error, happen while try to create order!'));
@@ -65,7 +68,7 @@ class Orders extends ChangeNotifier {
     final url =
         Uri.https(MyConstant.FIREBASE_RTDB_URL, '/orders/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
 
-    final response = await http.get(url);
+    final response = await interceptedHttp.get(url);
 
     if (response.statusCode >= 400) {
       throw (GeneralException('Error, happen while try to fetch orders!'));

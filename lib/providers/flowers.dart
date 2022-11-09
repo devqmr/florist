@@ -4,12 +4,15 @@ import 'dart:convert';
 import 'package:florist/providers/auth.dart';
 import 'package:florist/providers/flower.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http/intercepted_http.dart';
 
 import '../models/general_exception.dart';
+import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
 
 class Flowers with ChangeNotifier {
+  final interceptedHttp =
+  InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
   String token;
 
   Flowers(this.token, this._flowersList);
@@ -20,11 +23,11 @@ class Flowers with ChangeNotifier {
     try {
       final flowersUrl = Uri.https(
           MyConstant.FIREBASE_RTDB_URL, "/flowers.json", {"auth": token});
-      final response = await http.get(flowersUrl);
+      final response = await interceptedHttp.get(flowersUrl);
 
       final favUserFlowersUrl = Uri.https(MyConstant.FIREBASE_RTDB_URL,
           "/userFavFlowers/${Auth.userAuth?.userId}.json", {"auth": token});
-      final favUserFlowersResponse = await http.get(favUserFlowersUrl);
+      final favUserFlowersResponse = await interceptedHttp.get(favUserFlowersUrl);
       final favUserFlowersList = jsonDecode(favUserFlowersResponse.body) ?? HashMap();
 
       print("favUserFlowersList > $favUserFlowersList");
@@ -87,7 +90,7 @@ class Flowers with ChangeNotifier {
       'isFavorite': flower.isFavorite,
     });
 
-    final response = await http.post(url, body: flowerJson);
+    final response = await interceptedHttp.post(url, body: flowerJson);
 
     final newFlowerId = json.decode(response.body)['name'];
 

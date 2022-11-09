@@ -1,5 +1,7 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http/intercepted_http.dart';
+
+import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
 import 'auth.dart';
 import 'flower.dart';
@@ -31,6 +33,9 @@ class CartFlower with ChangeNotifier {
 }
 
 class Cart with ChangeNotifier {
+  final interceptedHttp =
+  InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
+
   Map<String, CartFlower> _cartFlowers = {};
 
   double get totalAmount {
@@ -56,7 +61,7 @@ class Cart with ChangeNotifier {
       final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
           '/cart/${Auth.userAuth?.userId}/${currentCartItem.id}.json');
 
-      final response = await http.patch(
+      final response = await interceptedHttp.patch(
         url,
         body: json.encode({
           'quantity': newQuantity,
@@ -92,7 +97,7 @@ class Cart with ChangeNotifier {
           'imageUrl': flower.imageUrl
         });
 
-        final response = await http.put(url, body: cartItemJson);
+        final response = await interceptedHttp.put(url, body: cartItemJson);
 
         //Don't insert cart item
         if (response.statusCode >= 400) {
@@ -115,7 +120,7 @@ class Cart with ChangeNotifier {
     final url =
         Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
 
-    final response = await http.get(url);
+    final response = await interceptedHttp.get(url);
 
     final responseBody = response.body;
 
@@ -166,7 +171,7 @@ class Cart with ChangeNotifier {
     final url =
         Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}/$id.json', {"auth": Auth.userAuth?.token});
 
-    final response = await http.delete(url);
+    final response = await interceptedHttp.delete(url);
 
     print(json.decode(response.body));
 
@@ -187,7 +192,7 @@ class Cart with ChangeNotifier {
     final url =
         Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
 
-    final response = await http.delete(url);
+    final response = await interceptedHttp.delete(url);
 
     //Don't insert cart item
     if (response.statusCode >= 400) {

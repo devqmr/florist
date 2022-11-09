@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 import 'package:florist/models/logging_interceptor.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:florist/my_constant.dart';
 import 'package:flutter/foundation.dart';
@@ -17,6 +15,8 @@ class Auth with ChangeNotifier {
   String _token = '';
   String _refreshToken = '';
   DateTime? _expiresIn;
+  final interceptedHttp =
+  InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
   String get token {
     return _token;
@@ -34,10 +34,9 @@ class Auth with ChangeNotifier {
       "returnSecureToken": true,
     });
 
-    final httpInter =
-        InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
-    final response = await httpInter.post(url, body: bodyJson);
+
+    final response = await interceptedHttp.post(url, body: bodyJson);
     final responseBody = json.decode(response.body) as Map<String, dynamic>;
     print("responseBody > $responseBody");
 
@@ -49,8 +48,6 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> signIn(String email, String password) async {
-    final httpInter =
-        InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
@@ -64,7 +61,7 @@ class Auth with ChangeNotifier {
       "returnSecureToken": true,
     });
 
-    final response = await httpInter.post(url, body: bodyJson);
+    final response = await interceptedHttp.post(url, body: bodyJson);
     final responseBody = json.decode(response.body) as Map<String, dynamic>;
 
     _userId = responseBody['localId'];
@@ -139,6 +136,8 @@ class Auth with ChangeNotifier {
     _token = userAuthJson['token'];
     _refreshToken = userAuthJson['refresh_token'];
     _expiresIn = DateTime.parse(userAuthJson['expires_in']);
+    userAuth = UserAuth(userId: _userId, token: _token);
+
 
     return true;
   }
