@@ -93,15 +93,20 @@ class CartItem extends StatelessWidget {
         },
         child: Card(
           child: ListTile(
-            leading: Text(
-                (cartFlower.quantity * cartFlower.price).toStringAsFixed(2)),
+            leading: Text("${(cartFlower.quantity * cartFlower.price).toStringAsFixed(2)}\$"),
             title: Text(cartFlower.title),
-            subtitle: Text(cartFlower.quantity.toString()),
-            trailing: Image.network(
-              cartFlower.imageUrl,
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
+            subtitle: Text("${cartFlower.quantity.toString()}x"),
+            trailing: ClipRRect(
+              borderRadius: BorderRadius.circular(20), // Image border
+              child: SizedBox.fromSize(
+                size: Size.fromRadius(48), // Image radius
+                child: Image.network(
+                  cartFlower.imageUrl,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             // trailing: Text(cartFlower.price.toString()),
           ),
