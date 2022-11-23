@@ -4,6 +4,7 @@ import 'package:florist/screens/flower_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../app_style.dart';
 import '../providers/flowers.dart';
 
 class FlowerItem extends StatelessWidget {
@@ -31,9 +32,14 @@ class FlowerItem extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.network(
-                        flower.imageUrl,
-                        fit: BoxFit.cover,
+                      Hero(
+                        tag: flower.id,
+                        child: FadeInImage(
+                          image: NetworkImage(flower.imageUrl),
+                          fit: BoxFit.cover,
+                          placeholder: const AssetImage(
+                              'assets/images/placeholder_garden_roses.png'),
+                        ),
                       ),
                       if (_quantityInCart > 0)
                         Positioned(
@@ -44,12 +50,13 @@ class FlowerItem extends StatelessWidget {
                             height: 28,
                             width: 28,
                             decoration: const BoxDecoration(
-                                color: Colors.redAccent, shape: BoxShape.circle),
+                                color: Colors.amberAccent,
+                                shape: BoxShape.circle),
                             child: FittedBox(
                               child: Text(
                                 "$_quantityInCart",
                                 style: const TextStyle(
-                                  color: Colors.white,
+                                  color: Color(0xFF4A148C),
                                 ),
                               ),
                             ),
@@ -58,7 +65,14 @@ class FlowerItem extends StatelessWidget {
                     ],
                   ),
                 ),
-                Text("${flower.title}"),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  "${flower.title}",
+                  style: AppStyle.appFontBold
+                      .copyWith(fontSize: 20, color: Colors.purple[600]),
+                ),
                 Container(
                   height: 48,
                   child: Row(
@@ -67,6 +81,7 @@ class FlowerItem extends StatelessWidget {
                         cartProvider: cartProvider,
                         icon: Icon(
                           _quantityInCart > 0 ? Icons.add : Icons.shopping_cart,
+                          color: Colors.purple[800],
                         ),
                         onPressed: () async {
                           await cartProvider.addFlowerToCart(flower);
@@ -78,6 +93,7 @@ class FlowerItem extends StatelessWidget {
                           flower.isFavorite
                               ? Icons.favorite
                               : Icons.favorite_border_outlined,
+                          color: Colors.purple[800],
                         ),
                         onPressed: () async {
                           await flower.toggleFavorite().then((success) => {
