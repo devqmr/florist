@@ -77,8 +77,8 @@ class CartItem extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: cartFlower.title,
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
+                      style: const TextStyle(
+                        color: Colors.amberAccent,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -92,23 +92,77 @@ class CartItem extends StatelessWidget {
           );
         },
         child: Card(
-          child: ListTile(
-            leading: Text("${(cartFlower.quantity * cartFlower.price).toStringAsFixed(2)}\$"),
-            title: Text(cartFlower.title),
-            subtitle: Text("${cartFlower.quantity.toString()}x"),
-            trailing: ClipRRect(
-              borderRadius: BorderRadius.circular(20), // Image border
-              child: SizedBox.fromSize(
-                size: Size.fromRadius(48), // Image radius
-                child: Image.network(
-                  cartFlower.imageUrl,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          child: Container(
+            height: 150,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16.0),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: Image.network(
+                    cartFlower.imageUrl,
+                    width: 125,
+                    height: 125,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
+                const SizedBox(
+                  width: 16,
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        cartFlower.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.purple),
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            cartFlower.price.toString(),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.black87),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ),
+                          Text(
+                            "x${cartFlower.quantity.toString()}",
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Text(
+                            "${(cartFlower.quantity * cartFlower.price).toStringAsFixed(2)}\$",
+                            style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.purple,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-            // trailing: Text(cartFlower.price.toString()),
           ),
         ),
       ),
