@@ -1,3 +1,4 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:florist/providers/cart.dart';
 import 'package:florist/widgets/cart_item.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +34,31 @@ class _CartScreenState extends State<CartScreen> {
     final _cartProvider = Provider.of<Cart>(context);
     final _ordersProvider = Provider.of<Orders>(context);
 
+
+    void showSuccessMessage(String errorMessage) {
+      final snackBar = SnackBar(
+          elevation: 0,
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: AwesomeSnackbarContent(
+              title: "Success!",
+              message: errorMessage,
+              contentType: ContentType.success));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
+
+
+    void onOrderCreated() {
+      _cartProvider.clearCartItems();
+      showSuccessMessage('The order has been created successfully ');
+    }
+
+
     return Column(
       children: [
         Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             child: Row(
@@ -45,7 +68,7 @@ class _CartScreenState extends State<CartScreen> {
                 TextButton(
                   onPressed: () {
                     _ordersProvider.createOrder(_cartProvider.cartItems)
-                        .then((isOrderCreated) => isOrderCreated ? _cartProvider.clearCartItems() : {}
+                        .then((isOrderCreated) => isOrderCreated ?  onOrderCreated() : {}
                     );
                   },
                   child: const Text('Order Now'),
