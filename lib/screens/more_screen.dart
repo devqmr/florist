@@ -11,7 +11,6 @@ class MoreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final authProvider = Provider.of<Auth>(context);
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -20,7 +19,7 @@ class MoreScreen extends StatelessWidget {
       ),
       alignment: Alignment.topCenter,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MoreScreenItem(
@@ -28,10 +27,16 @@ class MoreScreen extends StatelessWidget {
             icon: Icons.add_card,
             fun: () => Navigator.of(context).pushNamed(OrdersScreen.screenName),
           ),
+          SizedBox(
+            height: 32,
+          ),
           MoreScreenItem(
             title: "Add new Flower",
             icon: Icons.edit_note,
             fun: () => Navigator.of(context).pushNamed(ManageFlower.screenName),
+          ),
+          SizedBox(
+            height: 32,
           ),
           MoreScreenItem(
             title: "About",
@@ -43,6 +48,9 @@ class MoreScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+          SizedBox(
+            height: 32,
           ),
           MoreScreenItem(
             title: "LogOut",
@@ -71,7 +79,11 @@ class MoreScreenItem extends StatelessWidget {
         fun();
       },
       child: Container(
-        color: Colors.amberAccent,
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25),
+          color: Colors.purple[200],
+        ),
         padding: EdgeInsets.all(16),
         child: Row(
           mainAxisSize: MainAxisSize.min,
