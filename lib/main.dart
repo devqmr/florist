@@ -41,9 +41,8 @@ class MyApp extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'Florist Demo',
           theme: ThemeData(
-            primarySwatch: Colors.indigo,
+            primarySwatch: Colors.purple,
           ),
-          // home: auth.isAuthenticated ? const HomeScreen() : const AuthScreen(),
           home: auth.isAuthenticated
               ? const HomeScreen()
               : FutureBuilder(
