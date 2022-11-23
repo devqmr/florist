@@ -21,6 +21,10 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _isNeedToCreateAccount = false;
   bool _isLoading = false;
 
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
   void showLoading() {
     setState(() {
       _isLoading = true;
@@ -36,9 +40,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<Auth>(context);
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
+
 
     return Scaffold(
       body: SingleChildScrollView(
