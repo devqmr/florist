@@ -18,7 +18,7 @@ class FavFlowersScreen extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 200,
-            childAspectRatio: 4 / 5,
+            childAspectRatio: 3 / 5,
             mainAxisSpacing: 10,
             crossAxisSpacing: 15,
           ),
