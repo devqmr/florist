@@ -16,7 +16,7 @@ class Auth with ChangeNotifier {
   String _refreshToken = '';
   DateTime? _expiresIn;
   final interceptedHttp =
-  InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
+      InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
   String get token {
     return _token;
@@ -34,8 +34,6 @@ class Auth with ChangeNotifier {
       "returnSecureToken": true,
     });
 
-
-
     final response = await interceptedHttp.post(url, body: bodyJson);
     final responseBody = json.decode(response.body) as Map<String, dynamic>;
     print("responseBody > $responseBody");
@@ -45,10 +43,11 @@ class Auth with ChangeNotifier {
           "responseBody['error']['message'] > ${responseBody['error']['message']}");
       throw (HttpException(responseBody['error']['message']));
     }
+
+    signIn(email, password);
   }
 
   Future<void> signIn(String email, String password) async {
-
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
       "/v1/accounts:signInWithPassword",
@@ -63,6 +62,12 @@ class Auth with ChangeNotifier {
 
     final response = await interceptedHttp.post(url, body: bodyJson);
     final responseBody = json.decode(response.body) as Map<String, dynamic>;
+
+    if (responseBody['error'] != null) {
+      print(
+          "responseBody['error']['message'] > ${responseBody['error']['message']}");
+      throw (HttpException(responseBody['error']['message']));
+    }
 
     _userId = responseBody['localId'];
     _token = responseBody['idToken'];
@@ -81,13 +86,10 @@ class Auth with ChangeNotifier {
       return false;
     }
 
-    if(isAuthenticated){
+    if (isAuthenticated) {
       notifyListeners();
       return true;
     }
-
-
-
 
     return false;
   }
@@ -123,8 +125,6 @@ class Auth with ChangeNotifier {
     // Obtain shared preferences.
     final prefs = await SharedPreferences.getInstance();
 
-    await Future.delayed(Duration(seconds: 5));
-
     if (!prefs.containsKey('user_auth')) {
       return false;
     }
@@ -137,7 +137,6 @@ class Auth with ChangeNotifier {
     _refreshToken = userAuthJson['refresh_token'];
     _expiresIn = DateTime.parse(userAuthJson['expires_in']);
     userAuth = UserAuth(userId: _userId, token: _token);
-
 
     return true;
   }
