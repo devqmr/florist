@@ -6,7 +6,7 @@ Florist is Flutter App that work on IOS, Android, MacOs, and Web.
 
 You can watch a full demo from next video
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/Z2tTcXZlerQ/0.jpg)](http://www.youtube.com/watch?v=Z2tTcXZlerQ "Video Title")
+[![IMAGE ALT TEXT](https://github.com/devqmr/florist/blob/master/samples/small_youtube_sample.png)](http://www.youtube.com/watch?v=Z2tTcXZlerQ "Video Title")
 
 
 
