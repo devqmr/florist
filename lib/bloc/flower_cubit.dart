@@ -8,13 +8,16 @@ import 'package:meta/meta.dart';
 import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
 import '../providers/auth.dart';
+import 'flowers_cubit.dart';
 
 part 'flower_state.dart';
 
 class FlowerCubit extends Cubit<FlowerState> {
   final Flower flower;
+  final FlowersCubit flowersCubit;
 
-  FlowerCubit(this.flower) : super(FlowerInitial(flower, ""));
+  FlowerCubit({required this.flowersCubit, required this.flower})
+      : super(FlowerInitial(flower, ""));
 
   final interceptedHttp =
       InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
@@ -35,6 +38,8 @@ class FlowerCubit extends Cubit<FlowerState> {
         emit(FlowerToggleFavoriteFailure(
             flower.copyWith(isFavorite: oldFavStatus), "statusCode >= 400"));
       }
+
+      flowersCubit.updateFavoriteFlowerById(flower.id, newFavStatus);
 
       emit(FlowerToggleFavoriteSuccess(
           flower.copyWith(isFavorite: newFavStatus), ""));

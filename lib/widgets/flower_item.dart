@@ -1,19 +1,15 @@
 import 'package:florist/providers/cart.dart';
-import 'package:florist/providers/flower.dart';
 import 'package:florist/screens/flower_details_screen.dart';
-import 'package:florist/utils/help_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../app_style.dart';
 import '../bloc/flower_cubit.dart';
-import '../providers/flowers.dart';
 
 class FlowerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final flowersProv = Provider.of<Flowers>(context);
     final cartProvider = Provider.of<Cart>(context);
 
     return BlocBuilder<FlowerCubit, FlowerState>(
