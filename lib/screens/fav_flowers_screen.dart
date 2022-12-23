@@ -1,9 +1,9 @@
 import 'package:florist/bloc/flowers_cubit.dart';
-import 'package:florist/providers/flowers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import '../bloc/fav_flowers_cubit.dart';
 import '../bloc/flower_cubit.dart';
 import '../widgets/flower_item.dart';
 
@@ -22,7 +22,7 @@ class _FavFlowersScreenState extends State<FavFlowersScreen> {
   @override
   void didChangeDependencies() {
     if (_needToInit) {
-      context.read<FlowersCubit>().fetchFavFlowersList();
+      context.read<FavFlowersCubit>().fetchFavFlowersList();
 
       _needToInit = false;
     }
@@ -31,8 +31,14 @@ class _FavFlowersScreenState extends State<FavFlowersScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    return BlocBuilder<FlowersCubit, FlowersState>(
+    return BlocBuilder<FavFlowersCubit, FavFlowersState>(
+      buildWhen: (prev, current) {
+        if (current is FlowersUpdatesSuccess) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       builder: (context, state) {
         if (state is FavFlowersFetchLoading) {
           return const Center(
@@ -47,7 +53,7 @@ class _FavFlowersScreenState extends State<FavFlowersScreen> {
         } else if (state is FavFlowersFetchSuccess) {
           return RefreshIndicator(
             onRefresh: () async {
-              context.read<FlowersCubit>().fetch();
+              context.read<FavFlowersCubit>().fetchFavFlowersList();
             },
             child: GridView.builder(
                 padding: const EdgeInsets.all(20),
@@ -60,7 +66,9 @@ class _FavFlowersScreenState extends State<FavFlowersScreen> {
                 itemCount: state.flowersList.length,
                 itemBuilder: (context, index) {
                   return BlocProvider<FlowerCubit>(
-                    create: (context) => FlowerCubit(state.flowersList[index]),
+                    create: (context) => FlowerCubit(
+                        flowersCubit: context.read<FlowersCubit>(),
+                        flower: state.flowersList[index]),
                     child: FlowerItem(),
                   );
                 }),
