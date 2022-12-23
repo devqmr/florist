@@ -25,4 +25,10 @@ class FavFlowersCubit extends Cubit<FavFlowersState> {
     emit(FavFlowersFetchSuccess(
         "", flowersCubit.getFlowers().where((fl) => fl.isFavorite).toList()));
   }
+
+  @override
+  Future<void> close() {
+    streamSubscription.cancel();
+    return super.close();
+  }
 }
