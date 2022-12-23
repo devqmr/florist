@@ -1,4 +1,5 @@
 import 'package:florist/bloc/flower_cubit.dart';
+import 'package:florist/bloc/flowers_cubit.dart';
 import 'package:florist/bloc/orders_cubit.dart';
 import 'package:florist/providers/flowers.dart';
 import 'package:florist/screens/auth_screen.dart';
@@ -32,6 +33,9 @@ class MyApp extends StatelessWidget {
     // MultiPro
     return MultiBlocProvider(
       providers: [
+        BlocProvider<FlowersCubit>(
+          create: (context) => FlowersCubit(),
+        ),
         BlocProvider<OrdersCubit>(
           create: (context) => OrdersCubit(),
         ),
