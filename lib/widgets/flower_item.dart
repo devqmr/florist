@@ -13,8 +13,6 @@ import '../providers/flowers.dart';
 class FlowerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final flower = BlocProvider(create: create)
-    // final flower = Provider.of<Flower>(context);
     final flowersProv = Provider.of<Flowers>(context);
     final cartProvider = Provider.of<Cart>(context);
 
@@ -106,18 +104,7 @@ class FlowerItem extends StatelessWidget {
                             onPressed: () async {
                               await context
                                   .read<FlowerCubit>()
-                                  .toggleFavorite()
-                                  .then((success) => {
-                                        if (success)
-                                          {
-                                            {flowersProv.updateFlowersList()}
-                                          }
-                                      });
-
-                              // await state.flower.toggleFavorite().then((success) =>
-                              // {
-                              //   if (success) {flowersProv.updateFlowersList()}
-                              // });
+                                  .toggleFavorite();
                             },
                           ),
                         ],

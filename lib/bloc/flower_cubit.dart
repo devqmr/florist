@@ -19,9 +19,9 @@ class FlowerCubit extends Cubit<FlowerState> {
   final interceptedHttp =
       InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
-  Future<bool> toggleFavorite() async {
+  Future<void> toggleFavorite() async {
     final oldFavStatus = flower.isFavorite;
-    flower.isFavorite = !flower.isFavorite;
+    final newFavStatus = !flower.isFavorite;
 
     try {
       final favUserFlowersUrl = Uri.https(
@@ -29,22 +29,19 @@ class FlowerCubit extends Cubit<FlowerState> {
           "/userFavFlowers/${Auth.userAuth?.userId}/${flower.id}.json",
           {"auth": Auth.userAuth?.token});
       final favUserFlowersResponse = await interceptedHttp
-          .put(favUserFlowersUrl, body: json.encode(flower.isFavorite));
+          .put(favUserFlowersUrl, body: json.encode(newFavStatus));
 
       if (favUserFlowersResponse.statusCode >= 400) {
         emit(FlowerToggleFavoriteFailure(
             flower.copyWith(isFavorite: oldFavStatus), "statusCode >= 400"));
-        return false;
       }
 
-      emit(FlowerToggleFavoriteSuccess(flower.copyWith(isFavorite: flower.isFavorite), ""));
-      // emit(FlowerToggleFavoriteSuccess(flower, ""));
-      return true;
+      emit(FlowerToggleFavoriteSuccess(
+          flower.copyWith(isFavorite: newFavStatus), ""));
     } catch (e) {
       print(e);
       emit(FlowerToggleFavoriteFailure(
           flower.copyWith(isFavorite: oldFavStatus), e.toString()));
-      return false;
     }
   }
 }
