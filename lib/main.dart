@@ -1,3 +1,5 @@
+import 'package:florist/bloc/flower_cubit.dart';
+import 'package:florist/bloc/orders_cubit.dart';
 import 'package:florist/providers/flowers.dart';
 import 'package:florist/screens/auth_screen.dart';
 import 'package:florist/screens/flower_details_screen.dart';
@@ -6,6 +8,7 @@ import 'package:florist/screens/mange_flower.dart';
 import 'package:florist/screens/order_details_screen.dart';
 import 'package:florist/screens/orders_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/auth.dart';
@@ -27,47 +30,58 @@ class MyApp extends StatelessWidget {
     // ]);
 
     // MultiPro
-    return MultiProvider(
+    return MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => Auth()),
-        ChangeNotifierProxyProvider<Auth, Flowers>(
-            create: (ctx) => Flowers("", []),
-            update: (ctx, auth, previousFlowers) => Flowers(auth.token,
-                previousFlowers == null ? [] : previousFlowers.allFlowersList)),
-        ChangeNotifierProvider(create: (_) => Cart()),
-        ChangeNotifierProvider(create: (_) => Orders()),
+        BlocProvider<OrdersCubit>(
+          create: (context) => OrdersCubit(),
+        ),
       ],
-      child: Consumer<Auth>(
-        builder: (ctx, auth, _) => MaterialApp(
-          title: 'Florist Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.purple,
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => Auth()),
+          ChangeNotifierProxyProvider<Auth, Flowers>(
+              create: (ctx) => Flowers("", []),
+              update: (ctx, auth, previousFlowers) => Flowers(
+                  auth.token,
+                  previousFlowers == null
+                      ? []
+                      : previousFlowers.allFlowersList)),
+          ChangeNotifierProvider(create: (_) => Cart()),
+          ChangeNotifierProvider(create: (_) => Orders()),
+        ],
+        child: Consumer<Auth>(
+          builder: (ctx, auth, _) => MaterialApp(
+            title: 'Florist Demo',
+            theme: ThemeData(
+              primarySwatch: Colors.purple,
+            ),
+            home: auth.isAuthenticated
+                ? const HomeScreen()
+                : FutureBuilder(
+                    future: auth.tryAutoSignIn(),
+                    builder: (context, authResultsSnapshot) {
+                      if (authResultsSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(
+                          child: SplashScreen(),
+                        );
+                      } else {
+                        return const AuthScreen();
+                      }
+                    },
+                  ),
+            debugShowCheckedModeBanner: false,
+            // initialRoute: '/',
+            routes: {
+              HomeScreen.screenName: (cxt) => const HomeScreen(),
+              FlowerDetailsScreen.screenName: (cxt) =>
+                  const FlowerDetailsScreen(),
+              OrdersScreen.screenName: (cxt) => const OrdersScreen(),
+              OrderDetailsScreen.screenName: (cxt) =>
+                  const OrderDetailsScreen(),
+              ManageFlower.screenName: (cxt) => const ManageFlower(),
+            },
           ),
-          home: auth.isAuthenticated
-              ? const HomeScreen()
-              : FutureBuilder(
-                  future: auth.tryAutoSignIn(),
-                  builder: (context, authResultsSnapshot) {
-                    if (authResultsSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return const Center(
-                        child: SplashScreen(),
-                      );
-                    } else {
-                      return const AuthScreen();
-                    }
-                  },
-                ),
-          debugShowCheckedModeBanner: false,
-          // initialRoute: '/',
-          routes: {
-            HomeScreen.screenName: (cxt) => const HomeScreen(),
-            FlowerDetailsScreen.screenName: (cxt) =>
-                const FlowerDetailsScreen(),
-            OrdersScreen.screenName: (cxt) => const OrdersScreen(),
-            OrderDetailsScreen.screenName: (cxt) => const OrderDetailsScreen(),
-            ManageFlower.screenName: (cxt) => const ManageFlower(),
-          },
         ),
       ),
     );
