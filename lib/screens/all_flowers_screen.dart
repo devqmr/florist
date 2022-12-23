@@ -1,6 +1,4 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:florist/bloc/flower_cubit.dart';
-import 'package:florist/providers/flowers.dart';
 import 'package:florist/widgets/flower_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +22,6 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
   @override
   void didChangeDependencies() {
     if (_needToInit) {
-
       context.read<FlowersCubit>().fetch();
 
       // _flowersProvider = Provider.of<Flowers>(context);
@@ -90,11 +87,9 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
                 ),
                 itemCount: state.flowersList.length,
                 itemBuilder: (context, index) {
-                  return BlocProvider<FlowerCubit>(
-                    create: (context) => FlowerCubit(
-                        flowersCubit: context.read<FlowersCubit>(),
-                        flower: state.flowersList[index]),
-                    child: FlowerItem(),
+                  return FlowerItem(
+                    key: Key(state.flowersList[index].id),
+                    flowerId: state.flowersList[index].id,
                   );
                 }),
           );

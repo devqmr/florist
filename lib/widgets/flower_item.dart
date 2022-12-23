@@ -6,8 +6,24 @@ import 'package:provider/provider.dart';
 
 import '../app_style.dart';
 import '../bloc/flower_cubit.dart';
+import '../bloc/flowers_cubit.dart';
 
 class FlowerItem extends StatelessWidget {
+  final String flowerId;
+
+  const FlowerItem({Key? key, required this.flowerId}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<FlowerCubit>(
+        create: (context) => FlowerCubit(
+            flowersCubit: context.read<FlowersCubit>(),
+            flower: context.read<FlowersCubit>().findFlowerById(flowerId)),
+        child: FlowerItemContent());
+  }
+}
+
+class FlowerItemContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<Cart>(context);
@@ -160,12 +176,12 @@ class _FlowerActionWidgetState extends State<FlowerActionWidget> {
           },
           child: isLoading
               ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                  ),
-                )
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          )
               : widget.icon,
         ),
       ),

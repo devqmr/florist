@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../bloc/fav_flowers_cubit.dart';
-import '../bloc/flower_cubit.dart';
 import '../widgets/flower_item.dart';
 
 class FavFlowersScreen extends StatefulWidget {
@@ -65,11 +64,9 @@ class _FavFlowersScreenState extends State<FavFlowersScreen> {
                 ),
                 itemCount: state.flowersList.length,
                 itemBuilder: (context, index) {
-                  return BlocProvider<FlowerCubit>(
-                    create: (context) => FlowerCubit(
-                        flowersCubit: context.read<FlowersCubit>(),
-                        flower: state.flowersList[index]),
-                    child: FlowerItem(),
+                  return FlowerItem(
+                    key: Key(state.flowersList[index].id),
+                    flowerId: state.flowersList[index].id,
                   );
                 }),
           );
