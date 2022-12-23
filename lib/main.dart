@@ -1,3 +1,4 @@
+import 'package:florist/bloc/fav_flowers_cubit.dart';
 import 'package:florist/bloc/flower_cubit.dart';
 import 'package:florist/bloc/flowers_cubit.dart';
 import 'package:florist/bloc/orders_cubit.dart';
@@ -36,6 +37,10 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<FlowersCubit>(
           create: (context) => FlowersCubit(),
+        ),
+        BlocProvider<FavFlowersCubit>(
+          create: (context) =>
+              FavFlowersCubit(flowersCubit: context.read<FlowersCubit>()),
         ),
         BlocProvider<FlowerDetailsCubit>(
           create: (context) =>

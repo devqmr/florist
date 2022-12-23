@@ -24,26 +24,13 @@ class FlowersFetchSuccess extends FlowersState {
       : super();
 }
 
+class FlowersUpdatesSuccess extends FlowersState {
+  FlowersUpdatesSuccess(super.errorMessage, super.flowersList, super.flower)
+      : super();
+}
+
 class FlowersFetchFailure extends FlowersState {
   FlowersFetchFailure(super.errorMessage, super.flowersList, super.flower)
-      : super();
-}
-
-class FavFlowersFetchLoading extends FlowersState {
-  FavFlowersFetchLoading(
-      super.errorMessage, super.flowersList, super.flower)
-      : super();
-}
-
-class FavFlowersFetchSuccess extends FlowersState {
-  FavFlowersFetchSuccess(
-      super.errorMessage, super.flowersList, super.flower)
-      : super();
-}
-
-class FavFlowersFetchFailure extends FlowersState {
-  FavFlowersFetchFailure(
-      super.errorMessage, super.flowersList, super.flower)
       : super();
 }
 
