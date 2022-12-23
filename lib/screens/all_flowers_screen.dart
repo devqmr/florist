@@ -57,6 +57,13 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FlowersCubit, FlowersState>(
+      buildWhen: (prev, current) {
+        if (current is FlowersUpdatesSuccess) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       builder: (context, state) {
         if (state is FlowersFetchLoading) {
           return const Center(
@@ -84,7 +91,9 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
                 itemCount: state.flowersList.length,
                 itemBuilder: (context, index) {
                   return BlocProvider<FlowerCubit>(
-                    create: (context) => FlowerCubit(state.flowersList[index]),
+                    create: (context) => FlowerCubit(
+                        flowersCubit: context.read<FlowersCubit>(),
+                        flower: state.flowersList[index]),
                     child: FlowerItem(),
                   );
                 }),
