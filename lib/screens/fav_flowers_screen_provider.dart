@@ -1,9 +1,7 @@
 import 'package:florist/providers/flowers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
-import '../bloc/flower_cubit.dart';
 import '../widgets/flower_item.dart';
 
 class FavFlowersScreen extends StatelessWidget {
@@ -26,8 +24,8 @@ class FavFlowersScreen extends StatelessWidget {
           ),
           itemCount: favFlowersList.length,
           itemBuilder: (context, index) {
-            return BlocProvider<FlowerCubit>(
-              create: (context) => FlowerCubit(favFlowersList[index]),
+            return ChangeNotifierProvider.value(
+              value: favFlowersList[index],
               child: FlowerItem(),
             );
           }),

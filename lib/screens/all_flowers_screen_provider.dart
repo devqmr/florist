@@ -1,11 +1,9 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:florist/bloc/flower_cubit.dart';
 import 'package:florist/providers/flower.dart';
 import 'package:florist/providers/flowers.dart';
 import 'package:florist/providers/orders.dart';
 import 'package:florist/widgets/flower_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
@@ -90,8 +88,8 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
                   ),
                   itemCount: _flowersList.length,
                   itemBuilder: (context, index) {
-                    return BlocProvider<FlowerCubit>(
-                      create: (context) => FlowerCubit(_flowersList[index]),
+                    return ChangeNotifierProvider.value(
+                      value: _flowersList[index],
                       child: FlowerItem(),
                     );
                   }),
