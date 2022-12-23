@@ -1,3 +1,4 @@
+import 'package:florist/bloc/flower_details_cubit.dart';
 import 'package:florist/bloc/flowers_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,7 @@ class _FlowerDetailsScreenState extends State<FlowerDetailsScreen> {
   void didChangeDependencies() {
     if (_needToInit) {
       final flowerId = ModalRoute.of(context)!.settings.arguments as String;
-      context.read<FlowersCubit>().findFlowerById(flowerId);
+      context.read<FlowerDetailsCubit>().findFlowerById(flowerId);
 
       _needToInit = false;
     }
@@ -30,7 +31,7 @@ class _FlowerDetailsScreenState extends State<FlowerDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     // final flower = context.read<FlowersCubit>().findFlowerById(flowerId);
-    return BlocBuilder<FlowersCubit, FlowersState>(
+    return BlocBuilder<FlowerDetailsCubit, FlowerDetailsState>(
       builder: (context, state) {
         if (state is FlowerFindSuccess) {
           return Scaffold(

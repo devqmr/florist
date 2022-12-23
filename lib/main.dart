@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import 'bloc/flower_details_cubit.dart';
 import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/orders.dart';
@@ -35,6 +36,10 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<FlowersCubit>(
           create: (context) => FlowersCubit(),
+        ),
+        BlocProvider<FlowerDetailsCubit>(
+          create: (context) =>
+              FlowerDetailsCubit(flowersCubit: context.read<FlowersCubit>()),
         ),
         BlocProvider<OrdersCubit>(
           create: (context) => OrdersCubit(),

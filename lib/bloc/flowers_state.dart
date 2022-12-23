@@ -47,16 +47,6 @@ class FavFlowersFetchFailure extends FlowersState {
       : super();
 }
 
-class FlowerFindFailure extends FlowersState {
-  FlowerFindFailure(super.errorMessage, super.flowersList, super.flower)
-      : super();
-}
-
-class FlowerFindSuccess extends FlowersState {
-  FlowerFindSuccess(super.errorMessage, super.flowersList, super.flower)
-      : super();
-}
-
 class FlowersAddLoading extends FlowersState {
   FlowersAddLoading(super.errorMessage, super.flowersList, super.flower)
       : super();

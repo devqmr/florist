@@ -74,8 +74,16 @@ class FlowersCubit extends Cubit<FlowersState> {
         "", _flowersList.where((fl) => fl.isFavorite).toList(), null));
   }
 
-  void findFlowerById(String id) {
+  Flower findFlowerById(String id) {
     final index = _flowersList.indexWhere((flw) => flw.id == id);
-    return emit(FlowerFindSuccess("", [], _flowersList[index]));
+    return _flowersList[index];
+  }
+
+  void toggleFavoriteFlowerById(String id, bool newIsFavorite) {
+    final index = _flowersList.indexWhere((flw) => flw.id == id);
+    _flowersList[index] =
+        _flowersList[index].copyWith(isFavorite: newIsFavorite);
+
+    fetchFavFlowersList();
   }
 }
