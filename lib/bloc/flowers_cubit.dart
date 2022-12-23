@@ -21,7 +21,7 @@ class FlowersCubit extends Cubit<FlowersState> {
   final interceptedHttp =
       InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
-  void fetch() async {
+  void fetchFromServer() async {
     emit(FlowersFetchLoading("", const [], null));
 
     try {
@@ -67,6 +67,14 @@ class FlowersCubit extends Cubit<FlowersState> {
 
     emit(FlowersFetchSuccess("", [..._flowersList], null));
     // notifyListeners();
+  }
+
+  void fetch() async {
+    if (_flowersList.isNotEmpty) {
+      emit(FlowersFetchSuccess("", [..._flowersList], null));
+    } else {
+      fetchFromServer();
+    }
   }
 
   List<Flower> getFlowers() {
