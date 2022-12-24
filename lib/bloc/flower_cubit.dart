@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:florist/providers/flower.dart';
+import 'package:florist/models/flower.dart';
 import 'package:http_interceptor/http/intercepted_http.dart';
 import 'package:meta/meta.dart';
 

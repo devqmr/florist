@@ -75,7 +75,7 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
         } else if (state is FlowersFetchSuccess) {
           return RefreshIndicator(
             onRefresh: () async {
-              context.read<FlowersCubit>().fetch();
+              context.read<FlowersCubit>().fetch(fresh: true);
             },
             child: GridView.builder(
                 padding: const EdgeInsets.all(20),

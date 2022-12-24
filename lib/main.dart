@@ -2,7 +2,6 @@ import 'package:florist/bloc/fav_flowers_cubit.dart';
 import 'package:florist/bloc/flower_cubit.dart';
 import 'package:florist/bloc/flowers_cubit.dart';
 import 'package:florist/bloc/orders_cubit.dart';
-import 'package:florist/providers/flowers.dart';
 import 'package:florist/screens/auth_screen.dart';
 import 'package:florist/screens/flower_details_screen.dart';
 import 'package:florist/screens/home_screen.dart';
@@ -53,13 +52,6 @@ class MyApp extends StatelessWidget {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => Auth()),
-          ChangeNotifierProxyProvider<Auth, Flowers>(
-              create: (ctx) => Flowers("", []),
-              update: (ctx, auth, previousFlowers) => Flowers(
-                  auth.token,
-                  previousFlowers == null
-                      ? []
-                      : previousFlowers.allFlowersList)),
           ChangeNotifierProvider(create: (_) => Cart()),
           ChangeNotifierProvider(create: (_) => Orders()),
         ],

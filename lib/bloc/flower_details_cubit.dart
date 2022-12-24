@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../providers/flower.dart';
+import '../models/flower.dart';
 import 'flowers_cubit.dart';
 
 part 'flower_details_state.dart';

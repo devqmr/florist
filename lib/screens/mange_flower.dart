@@ -2,7 +2,7 @@ import 'package:florist/bloc/flowers_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/flower.dart';
+import '../models/flower.dart';
 
 class ManageFlower extends StatefulWidget {
   static const screenName = "/mange_flower";

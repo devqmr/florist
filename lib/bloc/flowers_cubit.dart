@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 import '../models/general_exception.dart';
 import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
-import '../providers/flower.dart';
+import '../models/flower.dart';
 
 part 'flowers_state.dart';
 

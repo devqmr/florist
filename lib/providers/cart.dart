@@ -4,7 +4,7 @@ import 'package:http_interceptor/http/intercepted_http.dart';
 import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
 import 'auth.dart';
-import 'flower.dart';
+import '../models/flower.dart';
 import 'package:florist/models/general_exception.dart';
 import 'package:flutter/foundation.dart';
 
