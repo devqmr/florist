@@ -69,11 +69,11 @@ class FlowersCubit extends Cubit<FlowersState> {
     // notifyListeners();
   }
 
-  void fetch() async {
-    if (_flowersList.isNotEmpty) {
-      emit(FlowersFetchSuccess("", [..._flowersList], null));
-    } else {
+  void fetch({bool fresh = false}) async {
+    if (_flowersList.isEmpty || fresh) {
       fetchFromServer();
+    } else {
+      emit(FlowersFetchSuccess("", [..._flowersList], null));
     }
   }
 
@@ -92,5 +92,28 @@ class FlowersCubit extends Cubit<FlowersState> {
         _flowersList[index].copyWith(isFavorite: newIsFavorite);
 
     emit(FlowersUpdatesSuccess("", [], null));
+  }
+
+  Future<void> addFlower(Flower flower) async {
+    final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json",
+        {"auth": Auth.userAuth?.token});
+
+    final flowerJson = json.encode({
+      'title': flower.title,
+      'description': flower.description,
+      'price': flower.price,
+      'imageUrl': flower.imageUrl,
+      'isFavorite': flower.isFavorite,
+    });
+
+    final response = await interceptedHttp.post(url, body: flowerJson);
+
+    final newFlowerId = json.decode(response.body)['name'];
+
+    final newFlower = flower.copyWith(id: newFlowerId);
+
+    emit(FlowersAddSuccess("", [], newFlower));
+    _flowersList.add(newFlower);
+    fetch();
   }
 }

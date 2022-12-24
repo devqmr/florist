@@ -1,7 +1,7 @@
+import 'package:florist/bloc/flowers_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/flowers.dart';
 import '../providers/flower.dart';
 
 class ManageFlower extends StatefulWidget {
@@ -34,7 +34,6 @@ class _ManageFlowerState extends State<ManageFlower> {
 
   @override
   Widget build(BuildContext context) {
-    final flowersProvider = Provider.of<Flowers>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -95,16 +94,14 @@ class _ManageFlowerState extends State<ManageFlower> {
                       'Add Flower, Description > ${descriptionController.text}');
                   print('Add Flower, Price > ${priceController.text}');
                   print('Add Flower, Image URL> ${imageUrlController.text}');
-
-                  flowersProvider.addFlower(
-                    Flower(
-                        id: "",
-                        title: titleController.text,
-                        description: descriptionController.text,
-                        imageUrl: imageUrlController.text,
-                        price: double.parse(priceController.text),
-                        isFavorite: false),
-                  );
+                  final newFlower = Flower(
+                      id: "",
+                      title: titleController.text,
+                      description: descriptionController.text,
+                      imageUrl: imageUrlController.text,
+                      price: double.parse(priceController.text),
+                      isFavorite: false);
+                  context.read<FlowersCubit>().addFlower(newFlower);
                 },
                 child: const Text('Add Flower'),
               ),
