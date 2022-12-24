@@ -1,10 +1,11 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:florist/bloc/orders_cubit.dart';
 import 'package:florist/providers/cart.dart';
 import 'package:florist/widgets/cart_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/orders.dart';
+import '../models/orders.dart';
 
 class CartScreen extends StatefulWidget {
   static const screenName = '/cart';
@@ -32,8 +33,6 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final _cartProvider = Provider.of<Cart>(context);
-    final _ordersProvider = Provider.of<Orders>(context);
-
 
     void showSuccessMessage(String errorMessage) {
       final snackBar = SnackBar(
@@ -47,18 +46,16 @@ class _CartScreenState extends State<CartScreen> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
 
-
-
     void onOrderCreated() {
       _cartProvider.clearCartItems();
       showSuccessMessage('The order has been created successfully ');
     }
 
-
     return Column(
       children: [
         Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
             child: Row(
@@ -67,9 +64,11 @@ class _CartScreenState extends State<CartScreen> {
                 Text('\$ ${_cartProvider.totalAmount.toStringAsFixed(2)}'),
                 TextButton(
                   onPressed: () {
-                    _ordersProvider.createOrder(_cartProvider.cartItems)
-                        .then((isOrderCreated) => isOrderCreated ?  onOrderCreated() : {}
-                    );
+                    context
+                        .read<OrdersCubit>()
+                        .createOrder(_cartProvider.cartItems)
+                        .then((isOrderCreated) =>
+                            isOrderCreated ? onOrderCreated() : {});
                   },
                   child: const Text('Order Now'),
                 )

@@ -15,7 +15,6 @@ import 'package:provider/provider.dart';
 import 'bloc/flower_details_cubit.dart';
 import 'providers/auth.dart';
 import 'providers/cart.dart';
-import 'providers/orders.dart';
 import 'screens/splash_screen.dart';
 
 void main() {
@@ -53,7 +52,6 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => Auth()),
           ChangeNotifierProvider(create: (_) => Cart()),
-          ChangeNotifierProvider(create: (_) => Orders()),
         ],
         child: Consumer<Auth>(
           builder: (ctx, auth, _) => MaterialApp(

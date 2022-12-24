@@ -1,4 +1,4 @@
-import 'package:florist/providers/orders.dart';
+import 'package:florist/models/orders.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
