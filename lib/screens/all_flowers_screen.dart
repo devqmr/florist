@@ -1,11 +1,11 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:florist/bloc/cart_cubit.dart';
 import 'package:florist/widgets/flower_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../bloc/flowers_cubit.dart';
-import '../providers/cart.dart';
 
 class AllFlowersScreen extends StatefulWidget {
   static const screenName = "/florist_collection";
@@ -23,17 +23,7 @@ class _AllFlowersScreenState extends State<AllFlowersScreen> {
   void didChangeDependencies() {
     if (_needToInit) {
       context.read<FlowersCubit>().fetch();
-
-      // _flowersProvider = Provider.of<Flowers>(context);
-      // _flowersProvider.fetchFlowers().then((value) {
-      //
-      // }).catchError((e) {
-      //
-      //   showErrorMessage(e.toString());
-      // });
-
-      final cartProvider = Provider.of<Cart>(context);
-      cartProvider.fetchCartItems();
+      context.read<CartCubit>().fetchCartItems();
 
       _needToInit = false;
     }

@@ -1,6 +1,5 @@
 import 'package:florist/bloc/orders_cubit.dart';
-import 'package:florist/providers/cart.dart';
-import 'package:florist/models/orders.dart';
+import 'package:florist/models/cart_flower.dart';
 import 'package:florist/screens/order_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

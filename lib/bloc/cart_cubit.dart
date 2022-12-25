@@ -1,40 +1,23 @@
 import 'dart:convert';
-import 'package:http_interceptor/http/intercepted_http.dart';
 
+import 'package:bloc/bloc.dart';
+import 'package:http_interceptor/http/intercepted_http.dart';
+import 'package:meta/meta.dart';
+
+import '../models/flower.dart';
+import '../models/general_exception.dart';
 import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
-import 'auth.dart';
-import '../models/flower.dart';
-import 'package:florist/models/general_exception.dart';
-import 'package:flutter/foundation.dart';
+import '../providers/auth.dart';
+import '../models/cart_flower.dart';
 
-class CartFlower with ChangeNotifier {
-  late final String id;
-  late final String title;
-  int quantity = 0;
-  late final double price;
-  late final String imageUrl;
+part 'cart_state.dart';
 
-  CartFlower({
-    required this.id,
-    required this.title,
-    required this.price,
-    required this.quantity,
-    required this.imageUrl,
-  });
+class CartCubit extends Cubit<CartState> {
+  CartCubit() : super(CartInitial(0.0, [], ""));
 
-  CartFlower.flower(Flower flower) {
-    this.id = flower.id;
-    this.title = flower.title;
-    this.quantity = 1;
-    this.price = flower.price;
-    this.imageUrl = flower.imageUrl;
-  }
-}
-
-class Cart with ChangeNotifier {
   final interceptedHttp =
-  InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
+      InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
   Map<String, CartFlower> _cartFlowers = {};
 
@@ -113,12 +96,14 @@ class Cart with ChangeNotifier {
       }
     }
 
-    notifyListeners();
+    emit(CartFetchSuccess(totalAmount, cartItems, ""));
   }
 
   Future<void> fetchCartItems() async {
-    final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
+    emit(CartFetchLoading(0.0, [], ""));
+
+    final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
+        '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
 
     final response = await interceptedHttp.get(url);
 
@@ -141,9 +126,12 @@ class Cart with ChangeNotifier {
           ),
         );
       });
-    }
 
-    notifyListeners();
+      emit(CartFetchSuccess(totalAmount, cartItems, ""));
+    } else {
+      emit(CartFetchFailure(
+          totalAmount, cartItems, "Error while fetch Cart items"));
+    }
   }
 
   List<CartFlower> get cartItems {
@@ -169,7 +157,7 @@ class Cart with ChangeNotifier {
 
   void removeItem(String id) async {
     final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}/$id.json', {"auth": Auth.userAuth?.token});
+    Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}/$id.json', {"auth": Auth.userAuth?.token});
 
     final response = await interceptedHttp.delete(url);
 
@@ -182,15 +170,13 @@ class Cart with ChangeNotifier {
     }
 
     _cartFlowers.removeWhere((key, value) => key == id);
-
-    notifyListeners();
   }
 
   void clearCartItems() async {
     _cartFlowers.clear();
 
-    final url =
-        Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
+    final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
+        '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
 
     final response = await interceptedHttp.delete(url);
 
@@ -199,7 +185,6 @@ class Cart with ChangeNotifier {
       throw (GeneralException('Error, happen while try to clear cart items!'));
     }
 
-    _cartFlowers.clear();
-    notifyListeners();
+    emit(CartInitial(0.0, [], ""));
   }
 }

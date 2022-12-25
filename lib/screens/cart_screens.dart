@@ -1,11 +1,10 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:florist/bloc/cart_cubit.dart';
 import 'package:florist/bloc/orders_cubit.dart';
-import 'package:florist/providers/cart.dart';
 import 'package:florist/widgets/cart_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
-import '../models/orders.dart';
 
 class CartScreen extends StatefulWidget {
   static const screenName = '/cart';
@@ -17,23 +16,8 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  bool _needToInit = true;
-
-  @override
-  void didChangeDependencies() {
-    if (_needToInit) {
-      // final carttt = Provider.of<Cart>(context);
-      // carttt.fetchCartItems();
-
-      _needToInit = false;
-    }
-    super.didChangeDependencies();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final _cartProvider = Provider.of<Cart>(context);
-
     void showSuccessMessage(String errorMessage) {
       final snackBar = SnackBar(
           elevation: 0,
@@ -47,47 +31,65 @@ class _CartScreenState extends State<CartScreen> {
     }
 
     void onOrderCreated() {
-      _cartProvider.clearCartItems();
+      context.read<CartCubit>().clearCartItems();
       showSuccessMessage('The order has been created successfully ');
     }
 
-    return Column(
-      children: [
-        Card(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            child: Row(
-              children: [
-                const Expanded(child: Text('Total')),
-                Text('\$ ${_cartProvider.totalAmount.toStringAsFixed(2)}'),
-                TextButton(
-                  onPressed: () {
-                    context
-                        .read<OrdersCubit>()
-                        .createOrder(_cartProvider.cartItems)
-                        .then((isOrderCreated) =>
-                            isOrderCreated ? onOrderCreated() : {});
+    return BlocBuilder<CartCubit, CartState>(
+      builder: (context, state) {
+        if (state is CartFetchLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is CartFetchFailure) {
+          return Center(
+            child: Text(state.errorMessage),
+          );
+        } else if (state is CartFetchSuccess || state is CartInitial) {
+          return Column(
+            children: [
+              Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  child: Row(
+                    children: [
+                      const Expanded(child: Text('Total')),
+                      Text('\$ ${state.totalAmount.toStringAsFixed(2)}'),
+                      TextButton(
+                        onPressed: () {
+                          context
+                              .read<OrdersCubit>()
+                              .createOrder(state.cartItems)
+                              .then((isOrderCreated) =>
+                                  isOrderCreated ? onOrderCreated() : {});
+                        },
+                        child: const Text('Order Now'),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (ctx, i) {
+                    return CartItem(
+                      cartFlower: state.cartItems[i],
+                    );
                   },
-                  child: const Text('Order Now'),
-                )
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemBuilder: (ctx, i) {
-              return ChangeNotifierProvider.value(
-                value: _cartProvider.cartItems[i],
-                child: const CartItem(),
-              );
-            },
-            itemCount: _cartProvider.cartItems.length,
-          ),
-        ),
-      ],
+                  itemCount: state.cartItems.length,
+                ),
+              ),
+            ],
+          );
+        } else {
+          return Center(
+            child: Text("Not Match Any State [$state]"),
+          );
+        }
+      },
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:florist/bloc/cart_cubit.dart';
 import 'package:florist/models/flower.dart';
 import 'package:http_interceptor/http/intercepted_http.dart';
 import 'package:meta/meta.dart';
@@ -15,14 +16,20 @@ part 'flower_state.dart';
 class FlowerCubit extends Cubit<FlowerState> {
   final Flower flower;
   final FlowersCubit flowersCubit;
+  final CartCubit cartCubit;
 
-  FlowerCubit({required this.flowersCubit, required this.flower})
-      : super(FlowerInitial(flower, ""));
+  FlowerCubit(
+      {required this.flowersCubit,
+      required this.cartCubit,
+      required this.flower})
+      : super(FlowerInitial(flower, cartCubit.getProductQuantity(flower), ""));
 
   final interceptedHttp =
       InterceptedHttp.build(interceptors: [LoggingInterceptor()]);
 
   Future<void> toggleFavorite() async {
+    final quantityInCart = cartCubit.getProductQuantity(flower);
+
     final oldFavStatus = flower.isFavorite;
     final newFavStatus = !flower.isFavorite;
 
@@ -36,17 +43,26 @@ class FlowerCubit extends Cubit<FlowerState> {
 
       if (favUserFlowersResponse.statusCode >= 400) {
         emit(FlowerToggleFavoriteFailure(
-            flower.copyWith(isFavorite: oldFavStatus), "statusCode >= 400"));
+            flower.copyWith(isFavorite: oldFavStatus),
+            quantityInCart,
+            "statusCode >= 400"));
       }
 
       flowersCubit.updateFavoriteFlowerById(flower.id, newFavStatus);
 
       emit(FlowerToggleFavoriteSuccess(
-          flower.copyWith(isFavorite: newFavStatus), ""));
+          flower.copyWith(isFavorite: newFavStatus), quantityInCart, ""));
     } catch (e) {
       print(e);
       emit(FlowerToggleFavoriteFailure(
-          flower.copyWith(isFavorite: oldFavStatus), e.toString()));
+          flower.copyWith(isFavorite: oldFavStatus),
+          quantityInCart,
+          e.toString()));
     }
+  }
+
+  checkQuantity() {
+    emit(FlowerUpdateQuantityInitialSuccess(
+        flower, cartCubit.getProductQuantity(flower), ""));
   }
 }

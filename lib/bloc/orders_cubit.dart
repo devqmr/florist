@@ -9,7 +9,7 @@ import '../models/general_exception.dart';
 import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
 import '../providers/auth.dart';
-import '../providers/cart.dart';
+import '../models/cart_flower.dart';
 import '../models/orders.dart';
 
 part 'orders_state.dart';

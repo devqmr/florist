@@ -1,14 +1,14 @@
-import 'package:florist/providers/cart.dart';
+import 'package:florist/bloc/cart_cubit.dart';
+import 'package:florist/models/cart_flower.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CartItem extends StatelessWidget {
-  const CartItem({Key? key}) : super(key: key);
+  final CartFlower cartFlower;
+  const CartItem({Key? key, required this.cartFlower}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final cart = Provider.of<Cart>(context);
-    final cartFlower = Provider.of<CartFlower>(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
       child: Dismissible(
@@ -68,7 +68,7 @@ class CartItem extends StatelessWidget {
         },
         onDismissed: (_) {
           //Remove item from list
-          cart.removeItem(cartFlower.id);
+          context.read<CartCubit>().removeItem(cartFlower.id);
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

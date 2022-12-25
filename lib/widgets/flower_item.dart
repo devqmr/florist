@@ -1,10 +1,10 @@
-import 'package:florist/providers/cart.dart';
 import 'package:florist/screens/flower_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../app_style.dart';
+import '../bloc/cart_cubit.dart';
 import '../bloc/flower_cubit.dart';
 import '../bloc/flowers_cubit.dart';
 
@@ -18,6 +18,7 @@ class FlowerItem extends StatelessWidget {
     return BlocProvider<FlowerCubit>(
         create: (context) => FlowerCubit(
             flowersCubit: context.read<FlowersCubit>(),
+            cartCubit: context.read<CartCubit>(),
             flower: context.read<FlowersCubit>().findFlowerById(flowerId)),
         child: FlowerItemContent());
   }
@@ -26,12 +27,8 @@ class FlowerItem extends StatelessWidget {
 class FlowerItemContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<Cart>(context);
-
     return BlocBuilder<FlowerCubit, FlowerState>(
       builder: (context, state) {
-        final _quantityInCart = cartProvider.getProductQuantity(state.flower);
-
         return GestureDetector(
           onTap: () {
             Navigator.of(context).pushNamed(FlowerDetailsScreen.screenName,
@@ -57,7 +54,7 @@ class FlowerItemContent extends StatelessWidget {
                                   'assets/images/placeholder_garden_roses.png'),
                             ),
                           ),
-                          if (_quantityInCart > 0)
+                          if (state.quantityInCart > 0)
                             Positioned(
                               top: 8,
                               right: 8,
@@ -70,7 +67,7 @@ class FlowerItemContent extends StatelessWidget {
                                     shape: BoxShape.circle),
                                 child: FittedBox(
                                   child: Text(
-                                    "$_quantityInCart",
+                                    "${state.quantityInCart}",
                                     style: const TextStyle(
                                       color: Color(0xFF4A148C),
                                     ),
@@ -94,19 +91,22 @@ class FlowerItemContent extends StatelessWidget {
                       child: Row(
                         children: [
                           FlowerActionWidget(
-                            cartProvider: cartProvider,
                             icon: Icon(
-                              _quantityInCart > 0
+                              state.quantityInCart > 0
                                   ? Icons.add
                                   : Icons.shopping_cart,
                               color: Colors.purple[800],
                             ),
                             onPressed: () async {
-                              await cartProvider.addFlowerToCart(state.flower);
+                              await context
+                                  .read<CartCubit>()
+                                  .addFlowerToCart(state.flower)
+                                  .then((value) => context
+                                      .read<FlowerCubit>()
+                                      .checkQuantity());
                             },
                           ),
                           FlowerActionWidget(
-                            cartProvider: cartProvider,
                             icon: Icon(
                               state.flower.isFavorite
                                   ? Icons.favorite
@@ -136,12 +136,10 @@ class FlowerItemContent extends StatelessWidget {
 class FlowerActionWidget extends StatefulWidget {
   const FlowerActionWidget({
     Key? key,
-    required this.cartProvider,
     required this.icon,
     required this.onPressed,
   }) : super(key: key);
 
-  final Cart cartProvider;
   final Icon icon;
   final Function onPressed;
 
@@ -176,12 +174,12 @@ class _FlowerActionWidgetState extends State<FlowerActionWidget> {
           },
           child: isLoading
               ? const SizedBox(
-            width: 16,
-            height: 16,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-            ),
-          )
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                )
               : widget.icon,
         ),
       ),
