@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:florist/app_style.dart';
+import 'package:florist/bloc/auth_cubit.dart';
 import 'package:florist/clip_paths/WaveClipper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth.dart';
 
 class AuthScreen extends StatefulWidget {
   static const screenName = '/auth';
@@ -39,9 +39,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<Auth>(context);
-
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -149,7 +146,6 @@ class _AuthScreenState extends State<AuthScreen> {
                             child: ElevatedButton(
                               onPressed: () {
                                 signUp(
-                                    authProvider,
                                     emailController,
                                     passwordController,
                                     confirmPasswordController);
@@ -177,7 +173,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             width: double.maxFinite,
                             child: ElevatedButton(
                               onPressed: () {
-                                signIn(authProvider, emailController,
+                                signIn(emailController,
                                     passwordController);
                               },
                               style: ElevatedButton.styleFrom(
@@ -239,7 +235,7 @@ class _AuthScreenState extends State<AuthScreen> {
     );
   }
 
-  void signIn(Auth authProvider, TextEditingController emailController,
+  void signIn(TextEditingController emailController,
       TextEditingController passwordController) async {
     try {
       if (emailController.text.isEmpty) {
@@ -263,7 +259,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
       showLoading();
 
-      await authProvider.signIn(
+      await context.read<AuthCubit>().signIn(
         emailController.text,
         passwordController.text,
       );
@@ -294,7 +290,6 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void signUp(
-      Auth authProvider,
       TextEditingController emailController,
       TextEditingController passwordController,
       TextEditingController confirmPasswordController) async {
@@ -334,7 +329,7 @@ class _AuthScreenState extends State<AuthScreen> {
       }
 
       showLoading();
-      await authProvider.signUp(
+      await context.read<AuthCubit>().signUp(
         emailController.text,
         passwordController.text,
       );

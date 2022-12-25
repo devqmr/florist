@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:florist/providers/auth.dart';
 import 'package:http_interceptor/http/intercepted_http.dart';
 import 'package:meta/meta.dart';
 
@@ -10,6 +9,7 @@ import '../models/general_exception.dart';
 import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
 import '../models/flower.dart';
+import 'auth_cubit.dart';
 
 part 'flowers_state.dart';
 
@@ -26,13 +26,13 @@ class FlowersCubit extends Cubit<FlowersState> {
 
     try {
       final flowersUrl = Uri.https(MyConstant.FIREBASE_RTDB_URL,
-          "/flowers.json", {"auth": Auth.userAuth?.token});
+          "/flowers.json", {"auth": AuthCubit.userAuth?.token});
       final response = await interceptedHttp.get(flowersUrl);
 
       final favUserFlowersUrl = Uri.https(
           MyConstant.FIREBASE_RTDB_URL,
-          "/userFavFlowers/${Auth.userAuth?.userId}.json",
-          {"auth": Auth.userAuth?.token});
+          "/userFavFlowers/${AuthCubit.userAuth?.userId}.json",
+          {"auth": AuthCubit.userAuth?.token});
       final favUserFlowersResponse =
           await interceptedHttp.get(favUserFlowersUrl);
       final favUserFlowersList =
@@ -96,7 +96,7 @@ class FlowersCubit extends Cubit<FlowersState> {
 
   Future<void> addFlower(Flower flower) async {
     final url = Uri.https(MyConstant.FIREBASE_RTDB_URL, "/flowers.json",
-        {"auth": Auth.userAuth?.token});
+        {"auth": AuthCubit.userAuth?.token});
 
     final flowerJson = json.encode({
       'title': flower.title,

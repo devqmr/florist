@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'all_flowers_screen.dart';
 import 'more_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class  HomeScreen extends StatefulWidget {
   static const screenName = "/home";
 
   const HomeScreen({Key? key}) : super(key: key);

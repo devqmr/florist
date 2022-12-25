@@ -8,9 +8,9 @@ import 'package:meta/meta.dart';
 import '../models/general_exception.dart';
 import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
-import '../providers/auth.dart';
 import '../models/cart_flower.dart';
 import '../models/orders.dart';
+import 'auth_cubit.dart';
 
 part 'orders_state.dart';
 
@@ -29,8 +29,8 @@ class OrdersCubit extends Cubit<OrdersState> {
 
     final url = Uri.https(
         MyConstant.FIREBASE_RTDB_URL,
-        '/orders/${Auth.userAuth?.userId}.json',
-        {"auth": Auth.userAuth?.token});
+        '/orders/${AuthCubit.userAuth?.userId}.json',
+        {"auth": AuthCubit.userAuth?.token});
 
     final response = await interceptedHttp.get(url);
 
@@ -82,7 +82,7 @@ class OrdersCubit extends Cubit<OrdersState> {
   Future<bool> createOrder(List<CartFlower> items) async {
     try {
       final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
-          '/orders/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
+          '/orders/${AuthCubit.userAuth?.userId}.json', {"auth": AuthCubit.userAuth?.token});
 
       Order tempOrder = Order(
           id: "",

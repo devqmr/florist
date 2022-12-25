@@ -1,15 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:florist/models/logging_interceptor.dart';
 
-import 'package:florist/my_constant.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http_interceptor/http/http.dart';
+import 'package:bloc/bloc.dart';
+import 'package:http_interceptor/http/intercepted_http.dart';
+import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/logging_interceptor.dart';
 import '../models/user_auth.dart';
+import '../my_constant.dart';
+import '../utils/help_utils.dart';
 
-class Auth with ChangeNotifier {
+part 'auth_state.dart';
+
+class AuthCubit extends Cubit<AuthState> {
+  AuthCubit() : super(AuthInitial(""));
+
   static UserAuth? userAuth;
   String _userId = '';
   String _token = '';
@@ -77,17 +83,21 @@ class Auth with ChangeNotifier {
     _refreshToken = responseBody['refreshToken'];
 
     await saveAuthData();
-    notifyListeners();
+    // notifyListeners(); todo
+    emit(AuthSignInSuccess(""));
   }
 
   Future<bool> tryAutoSignIn() async {
+    HelpUtils.logger.d("[AuthState >> FutureBuilder  enter tryAutoSignIn()]");
+
     final isHaveData = await fetchAuthData();
     if (!isHaveData) {
       return false;
     }
 
     if (isAuthenticated) {
-      notifyListeners();
+      // notifyListeners(); todo
+      emit(AuthSignInSuccess(""));
       return true;
     }
 
@@ -149,7 +159,7 @@ class Auth with ChangeNotifier {
     _expiresIn = null;
 
     await clearAuthData();
-    notifyListeners();
+    emit(AuthSignOutSuccess(""));
   }
 
   Future<void> clearAuthData() async {

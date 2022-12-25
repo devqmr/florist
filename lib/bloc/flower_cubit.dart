@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 
 import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
-import '../providers/auth.dart';
+import 'auth_cubit.dart';
 import 'flowers_cubit.dart';
 
 part 'flower_state.dart';
@@ -36,8 +36,8 @@ class FlowerCubit extends Cubit<FlowerState> {
     try {
       final favUserFlowersUrl = Uri.https(
           MyConstant.FIREBASE_RTDB_URL,
-          "/userFavFlowers/${Auth.userAuth?.userId}/${flower.id}.json",
-          {"auth": Auth.userAuth?.token});
+          "/userFavFlowers/${AuthCubit.userAuth?.userId}/${flower.id}.json",
+          {"auth": AuthCubit.userAuth?.token});
       final favUserFlowersResponse = await interceptedHttp
           .put(favUserFlowersUrl, body: json.encode(newFavStatus));
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:florist/bloc/auth_cubit.dart';
 import 'package:http_interceptor/http/intercepted_http.dart';
 import 'package:meta/meta.dart';
 
@@ -8,7 +9,6 @@ import '../models/flower.dart';
 import '../models/general_exception.dart';
 import '../models/logging_interceptor.dart';
 import '../my_constant.dart';
-import '../providers/auth.dart';
 import '../models/cart_flower.dart';
 
 part 'cart_state.dart';
@@ -42,7 +42,7 @@ class CartCubit extends Cubit<CartState> {
       final newQuantity = currentCartItem.quantity + 1;
 
       final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
-          '/cart/${Auth.userAuth?.userId}/${currentCartItem.id}.json');
+          '/cart/${AuthCubit.userAuth?.userId}/${currentCartItem.id}.json');
 
       final response = await interceptedHttp.patch(
         url,
@@ -70,7 +70,7 @@ class CartCubit extends Cubit<CartState> {
 
       try {
         final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
-            '/cart/${Auth.userAuth?.userId}/${flower.id}.json');
+            '/cart/${AuthCubit.userAuth?.userId}/${flower.id}.json');
 
         final cartItemJson = json.encode({
           'id': flower.id,
@@ -103,7 +103,7 @@ class CartCubit extends Cubit<CartState> {
     emit(CartFetchLoading(0.0, [], ""));
 
     final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
-        '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
+        '/cart/${AuthCubit.userAuth?.userId}.json', {"auth": AuthCubit.userAuth?.token});
 
     final response = await interceptedHttp.get(url);
 
@@ -157,7 +157,7 @@ class CartCubit extends Cubit<CartState> {
 
   void removeItem(String id) async {
     final url =
-    Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${Auth.userAuth?.userId}/$id.json', {"auth": Auth.userAuth?.token});
+    Uri.https(MyConstant.FIREBASE_RTDB_URL, '/cart/${AuthCubit.userAuth?.userId}/$id.json', {"auth": AuthCubit.userAuth?.token});
 
     final response = await interceptedHttp.delete(url);
 
@@ -176,7 +176,7 @@ class CartCubit extends Cubit<CartState> {
     _cartFlowers.clear();
 
     final url = Uri.https(MyConstant.FIREBASE_RTDB_URL,
-        '/cart/${Auth.userAuth?.userId}.json', {"auth": Auth.userAuth?.token});
+        '/cart/${AuthCubit.userAuth?.userId}.json', {"auth": AuthCubit.userAuth?.token});
 
     final response = await interceptedHttp.delete(url);
 
